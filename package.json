@@ -1,0 +1,21 @@
+{
+  "name": "nodejs-vk-osint",
+  "version": "0.0.1",
+  "description": "Node.js vk osint",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "vk",
+    "osint"
+  ],
+  "author": "Maksim Zhuchkov",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.1",
+    "vk-io": "^4.9.1"
+  }
+}
