@@ -15,7 +15,9 @@
   "author": "Maksim Zhuchkov",
   "license": "MIT",
   "dependencies": {
+    "cheerio": "^1.0.0",
     "express": "^4.21.1",
+    "needle": "^3.3.1",
     "vk-io": "^4.9.1"
   }
 }
