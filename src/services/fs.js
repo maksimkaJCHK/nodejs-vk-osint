@@ -10,3 +10,19 @@ export const makeFolder = (nameFolder) => {
     if (!err) console.log(`Папка ${nameFolder} успешно создана`);
   });
 };
+
+export const readJSONFile = ({ name, path = './results/' }) => new Promise((resolve, reject) => {
+  let obj;
+
+  fs.readFile(`${path}/${name}.json`, 'utf8', function(err, data) {
+    if (err) {
+      resolve(null);
+
+      return;
+    }
+
+    obj = JSON.parse(data);
+
+    resolve(obj);
+  });
+});

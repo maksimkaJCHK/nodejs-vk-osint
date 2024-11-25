@@ -8,7 +8,8 @@ import {
   getUserFriends,
   getSubscriptions,
   getFolowers,
-  getGroups
+  getGroups,
+  getUsersInfo
 } from './services/services.js';
 
 import { makeFolder } from './services/fs.js';
@@ -20,7 +21,7 @@ const vk = new VK({
   token
 });
 
-const example = async () => {
+const getFullUsersInfo = async () => {
   makeFolder('../results');
   makeFolder('../results/user_friends');
 
@@ -45,6 +46,24 @@ const example = async () => {
   }
 }
 
-example();
+const getShotUsersInfo = async () => {
+  makeFolder('../results');
+  makeFolder('../results/example');
+
+  const friendsIds = friends.map(({ id }) => id);
+
+  const getFriendInfo = async (ids) => {
+    const userFriends = await getUsersInfo(vk, ids);
+
+    console.log('Всего найдено, ' + userFriends.length);
+
+    fs.appendFileSync(`../results/example/friend-API-${bDate()}.json`, JSON.stringify(userFriends, null, 2));
+  }
+
+  await getFriendInfo(friendsIds.join(','));
+}
+
+getShotUsersInfo();
+//getFullUsersInfo();
 
 
