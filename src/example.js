@@ -12,7 +12,8 @@ import {
   getUsersInfo
 } from './services/services.js';
 
-import { makeFolder } from './services/fs.js';
+import delayF from './services/delay.js';
+import { makeFolder, readJSONFile } from './services/fs.js';
 import { bDate } from './services/helpers.js';
 
 const token = getToken();
@@ -21,7 +22,8 @@ const vk = new VK({
   token
 });
 
-const getFullUsersInfo = async () => {
+// Получаю друзей, подписки подписчиков, группы
+const getFullUserInfo = async () => {
   makeFolder('../results');
   makeFolder('../results/user_friends');
 
@@ -46,7 +48,8 @@ const getFullUsersInfo = async () => {
   }
 }
 
-const getShotUsersInfo = async () => {
+// Получаю информацию о пользователе
+const getMainUserInfo = async () => {
   makeFolder('../results');
   makeFolder('../results/example');
 
@@ -63,7 +66,63 @@ const getShotUsersInfo = async () => {
   await getFriendInfo(friendsIds.join(','));
 }
 
-getShotUsersInfo();
+//getMainUserInfo();
 //getFullUsersInfo();
 
+const getFriendsCountUser = async () => {
+  let allProfiles = 0;
+  let openProfiles = 0;
+  let closeProfiles = 0;
 
+  makeFolder('../results');
+  makeFolder('../results/example');
+
+  for (const { id, first_name, last_name } of friends) {
+    const name = `${first_name} ${last_name}`;
+    allProfiles++;
+
+    const fIdx = friends.findIndex((el) => el.id === id);
+
+    try {
+      const userFriends = await getUserFriends(vk, id, name);
+
+      const { items, count } = userFriends;
+      friends[fIdx].friendsCount = count;
+      friends[fIdx].friends = items;
+
+      openProfiles++;
+    } catch (error) {
+      console.log(`Профиль для ${name} закрыт.`);
+
+      friends[fIdx].friendsCount = 0;
+      friends[fIdx].friends = [];
+
+      closeProfiles++;
+    }
+
+    await delayF(500);
+  }
+
+  const newFriends = friends.sort((a, b) => {
+    if (a.friendsCount > b.friendsCount) {
+      return 1;
+    }
+
+    if (a.friendsCount < b.friendsCount) {
+      return -1;
+    }
+
+    return 0;
+  });
+
+  const newFriendsLToS = newFriends.reverse();
+
+  console.log(`Всего обработано ${allProfiles} профилей`);
+  console.log(`Открытых ${openProfiles} профилей`);
+  console.log(`Закрытых ${closeProfiles} профилей`);
+
+  fs.appendFileSync(`../results/example/friend-API-full-sort-${bDate()}.json`, JSON.stringify(newFriends, null, 0));
+  fs.appendFileSync(`../results/example/friend-API-full-sort-ls-${bDate()}.json`, JSON.stringify(newFriendsLToS, null, 0));
+}
+
+getFriendsCountUser();
