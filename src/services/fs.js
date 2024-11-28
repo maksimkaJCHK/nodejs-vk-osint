@@ -26,3 +26,14 @@ export const readJSONFile = ({ name, path = './results/' }) => new Promise((reso
     resolve(obj);
   });
 });
+
+export const writeToJSON = ({
+  path = './',
+  name,
+  data,
+  spices = 2
+}) => {
+  fs.appendFileSync(`${path}/${name}.json`, JSON.stringify(data, null, spices));
+};
+
+export const createFolders = (paths) => paths.forEach((path) => makeFolder(path));

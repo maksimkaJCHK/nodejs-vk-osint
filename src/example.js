@@ -12,8 +12,15 @@ import {
   getUsersInfo
 } from './services/services.js';
 
+import {
+  readJSONFile,
+  writeToJSON,
+  createFolders
+} from './services/fs.js';
+
+import { getUserFriAndInt } from './hof/services.js';
+
 import delayF from './services/delay.js';
-import { makeFolder, readJSONFile } from './services/fs.js';
 import { bDate } from './services/helpers.js';
 
 const token = getToken();
@@ -23,35 +30,35 @@ const vk = new VK({
 });
 
 // Получаю друзей, подписки подписчиков, группы
-const getFullUserInfo = async () => {
-  makeFolder('../results');
-  makeFolder('../results/user_friends');
-
-  const getFriendInfo = async ({ id, name }) => {
-    const userFriends = await getUserFriends(vk, id, name);
-    const subscriptions = await getSubscriptions(vk, id, name);
-    const folowers = await getFolowers(vk, id, name);
-    const groups = await getGroups(vk, id, name);
-
-    const userInfo = {
-      userFriends,
-      subscriptions,
-      groups,
-      folowers
-    }
-
-    fs.appendFileSync(`../results/user_friends/${name.replace(/ /, '_')}-friend-${bDate()}.json`, JSON.stringify(userInfo, null, 2));
-  }
+const getTypeInfAboutUsers = async () => {
+  createFolders([
+    '../results',
+    '../results/user_friends'
+  ]);
 
   for (const item of friends) {
-    await getFriendInfo(item);
+    const { id, name } = item;
+    
+    try {
+      const data = await getUserFriAndInt({ vk, id, name });
+
+      writeToJSON({
+        path: '../results/user_friends',
+        name: `${name.replace(/ /, '_')}-friend-${bDate()}`,
+        data,
+      });
+    } catch (error) {
+      console.error('Не удалось собрать информацию о ', name);
+    }
   }
 }
 
-// Получаю информацию о пользователе
+// Получаю информацию о пользователе/пользователях
 const getMainUserInfo = async () => {
-  makeFolder('../results');
-  makeFolder('../results/example');
+  createFolders([
+    '../results',
+    '../results/example'
+  ]);
 
   const friendsIds = friends.map(({ id }) => id);
 
@@ -66,16 +73,15 @@ const getMainUserInfo = async () => {
   await getFriendInfo(friendsIds.join(','));
 }
 
-//getMainUserInfo();
-//getFullUsersInfo();
-
 const getFriendsCountUser = async () => {
   let allProfiles = 0;
   let openProfiles = 0;
   let closeProfiles = 0;
 
-  makeFolder('../results');
-  makeFolder('../results/example');
+  createFolders([
+    '../results',
+    '../results/example'
+  ]);
 
   for (const { id, first_name, last_name } of friends) {
     const name = `${first_name} ${last_name}`;
@@ -125,4 +131,4 @@ const getFriendsCountUser = async () => {
   fs.appendFileSync(`../results/example/friend-API-full-sort-ls-${bDate()}.json`, JSON.stringify(newFriendsLToS, null, 0));
 }
 
-getFriendsCountUser();
+getTypeInfAboutUsers();
