@@ -6,9 +6,6 @@ import { friends } from './data/data.js';
 
 import {
   getUserFriends,
-  getSubscriptions,
-  getFolowers,
-  getGroups,
   getUsersInfo
 } from './services/services.js';
 
