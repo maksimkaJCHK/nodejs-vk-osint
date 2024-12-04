@@ -1,7 +1,7 @@
 import { VK } from 'vk-io';
 import fs from 'fs';
 
-import logger from './services/logger.js';
+import logger from './logger/logger.js';
 
 import getToken from './services/token.js';
 import { friends } from './data/data.js';
