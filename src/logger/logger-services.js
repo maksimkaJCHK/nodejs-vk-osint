@@ -21,10 +21,12 @@ class LoggerServices {
       yellow: "\x1b[33m",
       brightYellow: "\x1b[93m",
       blue: "\x1b[34m",
+      brightBlue: "\x1b[94m",
       magenta: "\x1b[35m",
       brightMagenta: "\x1b[95m",
       cyan: "\x1b[36m",
       white: "\x1b[37m",
+      brightWhite: "\x1b[97m",
       gray: "\x1b[90m",
       crimson: "\x1b[38m"
     },
@@ -37,13 +39,19 @@ class LoggerServices {
       yellow: "\x1b[43m",
       brightYellow: "\x1b[103m",
       blue: "\x1b[44m",
+      brightBlue: "\x1b[104m",
       magenta: "\x1b[45m",
       brightMagenta: "\x1b[105m",
       cyan: "\x1b[46m",
       white: "\x1b[47m",
+      brightWhite: "\x1b[107m",
       gray: "\x1b[100m",
       crimson: "\x1b[48m"
     }
+  }
+
+  clear() {
+    console.clear();
   }
 
   group(name = '') {
@@ -156,7 +164,11 @@ class LoggerServices {
   }
 
   bConsoleBg(mes, color) {
-    const colorTxt = this._colors.fg.black;
+    const typeColor = (color === 'brightBlue' || color === 'brightRed' || color === 'brightMagenta')
+      ? 'brightWhite'
+      : 'black';
+
+    const colorTxt = this._colors.fg[typeColor];
 
     const colorBg = this._colors.bg[color];
 

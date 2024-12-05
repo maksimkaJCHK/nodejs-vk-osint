@@ -1,13 +1,14 @@
 import fs from 'fs';
+import logger from '../logger/logger.js';
 
 export const makeFolder = (nameFolder) => {
   fs.mkdir(nameFolder, err => {
     if (err) {
-      console.error(`Не удалось создать папку ${nameFolder}`);
-      console.error(`${err}`);
+      logger.error(`Не удалось создать папку ${nameFolder}`);
+      logger.error(`${err}`);
     }
 
-    if (!err) console.log(`Папка ${nameFolder} успешно создана`);
+    if (!err) logger.success(`Папка ${nameFolder} успешно создана`);
   });
 };
 

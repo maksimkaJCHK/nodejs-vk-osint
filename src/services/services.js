@@ -1,3 +1,5 @@
+import logger from '../logger/logger.js';
+
 // user_ids - id-ки пользователей через запятую, или их псевдонимы
 export const getUsersInfo = async (vk, user_ids, names) => {
   const users = await vk.api.users.get({
@@ -63,7 +65,7 @@ export const getUsersInfo = async (vk, user_ids, names) => {
     ],
   });
 
-  console.log(`Информация для следующих пользователях получена - ${names ?? user_ids}.`);
+  logger.success(`Информация для следующих пользователях получена - ${names ?? user_ids}.`);
 
   return users;
 }
@@ -107,7 +109,7 @@ export const getMembersGroup = async (vk, group_id, nameGroup) => {
     ],
   });
 
-  console.log(`Информация о пользователях группы (${nameGroup ?? group_id}) получена.`);
+  logger.success(`Информация о пользователях группы (${nameGroup ?? group_id}) получена.`);
 
   return members;
 }
@@ -130,7 +132,7 @@ export const getUserFriends = async (vk, user_id, name) => {
     ],
   });
 
-  console.log(`Информация о друзьях пользователя ${name ?? user_id} получена.`);
+  logger.success(`Информация о друзьях пользователя ${name ?? user_id} получена.`);
 
   return friends;
 }
@@ -152,8 +154,8 @@ export const getSubscriptions = async (vk, user_id, name) => {
       'blacklisted_by_me'
     ],
   });
-  
-  console.log(`Поучаю информацию о подписках для пользователя ${name ?? user_id}`);
+
+  logger.success(`Поучаю информацию о подписках для пользователя ${name ?? user_id}`);
 
   return subscriptions;
 }
@@ -227,7 +229,7 @@ export const getFolowers = async (vk, user_id, name) => {
     ],
   });
 
-  console.log(`Получаю подписчиков для пользователя ${name ?? user_id}`);
+  logger.success(`Получаю подписчиков для пользователя ${name ?? user_id}`);
 
   return folowers;
 }
@@ -259,7 +261,7 @@ export const getGroups = async (vk, user_id, name) => {
     ],
   });
 
-  console.log(`Получил группы Для пользователя ${name ?? user_id}`);
+  logger.success(`Получил группы Для пользователя ${name ?? user_id}`);
 
   return groups;
 }

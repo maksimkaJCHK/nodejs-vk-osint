@@ -28,7 +28,7 @@ const vk = new VK({
   token
 });
 
-// Получаю друзей, подписки подписчиков, группы
+// Получаю друзей, подписки, подписчиков, группы
 const getTypeInfAboutUsers = async () => {
   createFolders([
     '../results',
@@ -47,7 +47,7 @@ const getTypeInfAboutUsers = async () => {
         data,
       });
     } catch (error) {
-      console.error('Не удалось собрать информацию о ', name);
+      logger.error('Не удалось собрать информацию о ', name);
     }
   }
 }
@@ -64,7 +64,7 @@ const getMainUserInfo = async () => {
   const getFriendInfo = async (ids) => {
     const userFriends = await getUsersInfo(vk, ids);
 
-    console.log('Всего найдено, ' + userFriends.length);
+    logger.success('Всего найдено, ' + userFriends.length);
 
     fs.appendFileSync(`../results/example/friend-API-${bDate()}.json`, JSON.stringify(userFriends, null, 2));
   }
@@ -97,7 +97,7 @@ const getFriendsCountUser = async () => {
 
       openProfiles++;
     } catch (error) {
-      console.log(`Профиль для ${name} закрыт.`);
+      logger.error(`Профиль для ${name} закрыт.`);
 
       friends[fIdx].friendsCount = 0;
       friends[fIdx].friends = [];
@@ -122,9 +122,9 @@ const getFriendsCountUser = async () => {
 
   const newFriendsLToS = newFriends.reverse();
 
-  console.log(`Всего обработано ${allProfiles} профилей`);
-  console.log(`Открытых ${openProfiles} профилей`);
-  console.log(`Закрытых ${closeProfiles} профилей`);
+  logger.success(`Всего обработано ${allProfiles} профилей`);
+  logger.success(`Открытых ${openProfiles} профилей`);
+  logger.success(`Закрытых ${closeProfiles} профилей`);
 
   fs.appendFileSync(`../results/example/friend-API-full-sort-${bDate()}.json`, JSON.stringify(newFriends, null, 0));
   fs.appendFileSync(`../results/example/friend-API-full-sort-ls-${bDate()}.json`, JSON.stringify(newFriendsLToS, null, 0));

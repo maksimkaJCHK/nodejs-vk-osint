@@ -2,11 +2,15 @@ import LoggerServices from './logger-services.js';
 
 class Logger extends LoggerServices {
   type(mes) {
-    this.bConsole(mes, 'white');
+    this.bConsole(mes, 'brightWhite');
+  }
+
+  mes(mes) {
+    this.bConsole(mes, 'brightMagenta');
   }
 
   info(mes) {
-    this.bConsole(mes, 'brightMagenta');
+    this.bConsole(mes, 'brightBlue');
   }
 
   success(mes) {
@@ -17,7 +21,7 @@ class Logger extends LoggerServices {
     this.bConsole(mes, 'brightYellow');
   }
 
-  danger(mes) {
+  error(mes) {
     this.bConsole(mes, 'brightRed');
   }
 }
