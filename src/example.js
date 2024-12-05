@@ -37,7 +37,9 @@ const getTypeInfAboutUsers = async () => {
 
   for (const item of friends) {
     const { id, name } = item;
-    
+
+    logger.group(`Собираю информацию о пользователе - ${name}`);
+
     try {
       const data = await getUserFriAndInt({ vk, id, name });
 
@@ -47,8 +49,10 @@ const getTypeInfAboutUsers = async () => {
         data,
       });
     } catch (error) {
-      logger.error('Не удалось собрать информацию о ', name);
+      logger.error(`Не удалось собрать информацию о ${name}`);
     }
+
+    logger.endGroup();
   }
 }
 
@@ -129,5 +133,3 @@ const getFriendsCountUser = async () => {
   fs.appendFileSync(`../results/example/friend-API-full-sort-${bDate()}.json`, JSON.stringify(newFriends, null, 0));
   fs.appendFileSync(`../results/example/friend-API-full-sort-ls-${bDate()}.json`, JSON.stringify(newFriendsLToS, null, 0));
 }
-
-getTypeInfAboutUsers();

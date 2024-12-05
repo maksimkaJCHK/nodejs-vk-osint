@@ -1,5 +1,8 @@
 import logger from '../logger/logger.js';
 
+// Как правило друзей и групп отдается не больше 5_000 поэтому это значение я вынесу в переменную
+const maxCount = 5_000;
+
 // user_ids - id-ки пользователей через запятую, или их псевдонимы
 export const getUsersInfo = async (vk, user_ids, names) => {
   const users = await vk.api.users.get({
@@ -115,22 +118,53 @@ export const getMembersGroup = async (vk, group_id, nameGroup) => {
 }
 
 export const getUserFriends = async (vk, user_id, name) => {
-  const friends = await vk.api.friends.get({
-    user_id,
-    fields: [
-      'bdate',
-      'domain',
-      'universities',
-      'education',
-      'last_seen',
-      'nickname',
-      'photo_200_orig',
-      'city',
-      'contacts',
-      'status',
-      'universities'
-    ],
-  });
+  let isScrap = true;
+  let offset = 0;
+  let friends = {};
+  let fMaxCount = maxCount - 1;
+
+  logger.success(`Информация сбор информации о пользователе ${name ?? user_id}.`);
+
+  // Схитрю, всего может быть 10_000 друзей, поэтому, если их будет четко 10_000, то я по тому, что их возвращается не 4_999 (maxCount - 1) смогу понять, что запрос делать не нужно, тут API кривое, count всегда 5_000 отдает, даже если друзей 8_000 и я по второму разу делаю запрос, иначе я не пойму когда остановиться
+  while (isScrap) {
+    const friendsAPI = await vk.api.friends.get({
+      user_id,
+      offset: fMaxCount * offset,
+      count: fMaxCount,
+      fields: [
+        'bdate',
+        'domain',
+        'universities',
+        'education',
+        'last_seen',
+        'nickname',
+        'photo_200_orig',
+        'city',
+        'contacts',
+        'status',
+        'universities'
+      ],
+    });
+
+    const { items } = friendsAPI;
+
+    if (offset === 0) {
+      friends = {
+        count: items.length,
+        items,
+      }
+    }
+
+    if (offset !== 0) {
+      friends.count += items.length;
+      friends.items = [ ...friends.items, ...items];
+    }
+
+    if (items.length === fMaxCount) offset++;
+
+    // Всего может быть 10_000 друзей не больше
+    if (items.length !== fMaxCount) isScrap = false;
+  }
 
   logger.success(`Информация о друзьях пользователя ${name ?? user_id} получена.`);
 
