@@ -112,7 +112,9 @@ class LoggerServices {
   bDate(date) {
     const day = this.bNumb(date.getDate());
     const month = this.bNumb(date.getMonth() + 1);
-    const year = this._isFullYear ? date.getFullYear() : String(date.getFullYear()).slice(2);
+    const fullYear = date.getFullYear();
+
+    const year = this._isFullYear ? fullYear : String(fullYear).slice(2);
 
     return `${day}.${month}.${year}`;
   }
@@ -131,13 +133,9 @@ class LoggerServices {
     let sDate = '';
 
     if (this._isDate) sDate = this.bDate(cDate)
-
     if (this._isTime) sTime = this.bTime(cDate);
-
     if (this._isTime && this._isDate) return `${sTime}  ${sDate}  `;
-
     if (this._isTime) return `${sTime}  `;
-
     if (this._isDate) return `${sDate}  `;
 
     return '';
@@ -175,7 +173,6 @@ class LoggerServices {
       : 'black';
 
     const colorTxt = this._colors.fg[typeColor];
-
     const colorBg = this._colors.bg[color];
 
     if (!this._isTime && !this._isDate) {
@@ -197,13 +194,9 @@ class LoggerServices {
   }
 
   bConsole(mes, color) {
-    if (this._isBg) {
-      this.bConsoleBg(mes, color);
-    } 
-
-    if (!this._isBg) {
-      this.bConsoleText(mes, color);
-    }
+    this._isBg
+      ? this.bConsoleBg(mes, color)
+      : this.bConsoleText(mes, color);
   }
 }
 
