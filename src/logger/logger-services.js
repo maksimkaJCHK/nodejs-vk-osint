@@ -164,7 +164,13 @@ class LoggerServices {
   }
 
   bConsoleBg(mes, color) {
-    const typeColor = (color === 'brightBlue' || color === 'brightRed' || color === 'brightMagenta')
+    const isWhiteColorArr = [
+      'brightBlue',
+      'brightRed',
+      'brightMagenta'
+    ];
+
+    const typeColor = isWhiteColorArr.includes(color)
       ? 'brightWhite'
       : 'black';
 
