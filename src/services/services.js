@@ -201,6 +201,8 @@ export const getUserFriends = async (vk, user_id, name) => {
 }
 
 export const getSubscriptions = async (vk, user_id, name) => {
+  logger.info(`Поучаю информацию о подписках для пользователя ${name ?? user_id}`);
+
   const subscriptions = await vk.api.users.getSubscriptions({
     user_id,
     fields: [
@@ -218,7 +220,7 @@ export const getSubscriptions = async (vk, user_id, name) => {
     ],
   });
 
-  logger.success(`Поучаю информацию о подписках для пользователя ${name ?? user_id}`);
+  logger.success(`Поучил информацию о подписках для пользователя ${name ?? user_id}`);
 
   return subscriptions;
 }
