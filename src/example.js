@@ -1,5 +1,4 @@
 import { VK } from 'vk-io';
-import fs from 'fs';
 
 import logger from './logger/logger.js';
 
@@ -14,7 +13,7 @@ import {
 import {
   readJSONFile,
   writeToJSON,
-  createFolders
+  createFolders,
 } from './services/fs.js';
 
 import { getUserFriAndInt } from './hof/services.js';
@@ -70,7 +69,11 @@ const getMainUserInfo = async () => {
 
     logger.success('Всего найдено, ' + userFriends.length);
 
-    fs.appendFileSync(`../results/example/friend-API-${bDate()}.json`, JSON.stringify(userFriends, null, 2));
+    writeToJSON({
+      path: '../results/example',
+      name: `friend-API-${bDate()}`,
+      data: userFriends,
+    });
   }
 
   await getFriendInfo(friendsIds.join(','));
@@ -130,6 +133,17 @@ const getFriendsCountUser = async () => {
   logger.success(`Открытых ${openProfiles} профилей`);
   logger.success(`Закрытых ${closeProfiles} профилей`);
 
-  fs.appendFileSync(`../results/example/friend-API-full-sort-${bDate()}.json`, JSON.stringify(newFriends, null, 0));
-  fs.appendFileSync(`../results/example/friend-API-full-sort-ls-${bDate()}.json`, JSON.stringify(newFriendsLToS, null, 0));
+  writeToJSON({
+    path: '../results/example',
+    name: `friend-API-full-sort-${bDate()}`,
+    data: newFriends,
+    spices: 0
+  });
+
+  writeToJSON({
+    path: '../results/example',
+    name: `friend-API-full-sort-ls-${bDate()}`,
+    data: newFriendsLToS,
+    spices: 0
+  });
 }
