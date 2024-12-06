@@ -7,7 +7,7 @@ import { friends } from './data/data.js';
 
 import {
   getUserFriends,
-  getUsersInfo
+  getUsersInfo,
 } from './services/services.js';
 
 import {

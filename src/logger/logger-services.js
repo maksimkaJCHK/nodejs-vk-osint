@@ -54,8 +54,8 @@ class LoggerServices {
     console.clear();
   }
 
-  group(name = '') {
-    console.group(name);
+  group(nameGroup = '') {
+    console.group(nameGroup);
   }
 
   endGroup() {
