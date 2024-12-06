@@ -138,8 +138,6 @@ export const getMembersGroup = async (vk, group_id, nameGroup) => {
 
     if (count <= members.items.length) isScrap = false;
 
-    console.log(count);
-    console.log(members.count);
     await delayF(400);
   }
 
@@ -226,75 +224,107 @@ export const getSubscriptions = async (vk, user_id, name) => {
 }
 
 export const getFolowers = async (vk, user_id, name) => {
-  const folowers = await vk.api.users.getFollowers({
-    user_id,
-    fields: [
-      'about',
-      'activities',
-      'bdate',
-      'blacklisted',
-      'blacklisted_by_me',
-      'books',
-      'can_post',
-      'can_see_all_posts',
-      'can_see_audio',
-      'can_send_friend_request',
-      'can_write_private_message',
-      'career',
-      'city',
-      'common_count',
-      'connections',
-      'contacts',
-      'country',
-      'crop_photo',
-      'domain',
-      'education',
-      'exports',
-      'followers_count',
-      'friend_status',
-      'games',
-      'has_mobile',
-      'has_photo',
-      'home_town',
-      'interests',
-      'is_favorite',
-      'is_friend',
-      'is_hidden_from_feed',
-      'last_seen',
-      'lists',
-      'maiden_name',
-      'military',
-      'movies',
-      'music',
-      'nickname',
-      'occupation',
-      'online',
-      'personal',
-      'photo_100',
-      'photo_200',
-      'photo_200_orig',
-      'photo_400_orig',
-      'photo_50',
-      'photo_id',
-      'photo_max',
-      'photo_max_orig',
-      'quotes',
-      'relation',
-      'relatives',
-      'schools',
-      'screen_name',
-      'sex',
-      'site',
-      'status',
-      'timezone',
-      'tv',
-      'universities',
-      'verified',
-      'wall_comments',
-    ],
-  });
+  let folowers = {};
+  let isScrap = true;
+  let offsetCount = 0;
+  const offset = 1_00;
 
-  logger.success(`Получаю подписчиков для пользователя ${name ?? user_id}`);
+  logger.type(`Получаю подписчиков для пользователя ${name ?? user_id}`);
+
+  while (isScrap) {
+    const folowersAPI = await vk.api.users.getFollowers({
+      user_id,
+      count: 1_000, // Больше получить не получится, только 1_000
+      offset: 1_000 * offsetCount,
+      fields: [
+        'about',
+        'activities',
+        'bdate',
+        'blacklisted',
+        'blacklisted_by_me',
+        'books',
+        'can_post',
+        'can_see_all_posts',
+        'can_see_audio',
+        'can_send_friend_request',
+        'can_write_private_message',
+        'career',
+        'city',
+        'common_count',
+        'connections',
+        'contacts',
+        'country',
+        'crop_photo',
+        'domain',
+        'education',
+        'exports',
+        'followers_count',
+        'friend_status',
+        'games',
+        'has_mobile',
+        'has_photo',
+        'home_town',
+        'interests',
+        'is_favorite',
+        'is_friend',
+        'is_hidden_from_feed',
+        'last_seen',
+        'lists',
+        'maiden_name',
+        'military',
+        'movies',
+        'music',
+        'nickname',
+        'occupation',
+        'online',
+        'personal',
+        'photo_100',
+        'photo_200',
+        'photo_200_orig',
+        'photo_400_orig',
+        'photo_50',
+        'photo_id',
+        'photo_max',
+        'photo_max_orig',
+        'quotes',
+        'relation',
+        'relatives',
+        'schools',
+        'screen_name',
+        'sex',
+        'site',
+        'status',
+        'timezone',
+        'tv',
+        'universities',
+        'verified',
+        'wall_comments',
+      ],
+    });
+
+    const { count, items } = folowersAPI;
+
+    if (offsetCount === 0) {
+      folowers = {
+        count: items.length,
+        items
+      }
+    }
+
+    if (offsetCount !== 0) {
+      folowers.count += items.length;
+      folowers.items = [ ...folowers.items, ...items ];
+    }
+
+    if (count <= folowers.items.length) isScrap = false;
+
+    offsetCount++;
+    logger.info(`Получил ${folowers.items.length} подписчиков`);
+
+    await delayF(400);
+  }
+
+  logger.success(`Собрал подписчиков для пользователя ${name ?? user_id}`);
 
   return folowers;
 }
@@ -302,7 +332,7 @@ export const getFolowers = async (vk, user_id, name) => {
 export const getGroups = async (vk, user_id, name) => {
   const groups = await vk.api.groups.get({
     user_id,
-    count: 1000,
+    count: 1_000,
     fields: [
       'activity',
       'can_create_topic',

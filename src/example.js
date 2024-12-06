@@ -8,6 +8,7 @@ import { friends } from './data/data.js';
 import {
   getUserFriends,
   getUsersInfo,
+  getFolowers,
 } from './services/services.js';
 
 import {
@@ -147,3 +148,4 @@ const getFriendsCountUser = async () => {
     spices: 0
   });
 }
+
