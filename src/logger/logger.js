@@ -24,6 +24,36 @@ class Logger extends LoggerServices {
   error(mes) {
     this.bConsole(mes, 'brightRed');
   }
+
+  oneType(mes) {
+    this.clear();
+    this.type(mes);
+  }
+
+  oneMes(mes) {
+    this.clear();
+    this.mes(mes);
+  }
+
+  oneSuccess(mes) {
+    this.clear();
+    this.success(mes);
+  }
+
+  oneType(mes) {
+    this.clear();
+    this.type(mes);
+  }
+
+  oneWarn(mes) {
+    this.clear();
+    this.warn(mes);
+  }
+
+  oneError(mes) {
+    this.clear();
+    this.error(mes);
+  }
 }
 
 export default new Logger();
