@@ -189,7 +189,11 @@ export const getUserFriends = async (vk, user_id, name) => {
       friends.items = [ ...friends.items, ...items];
     }
 
-    if (items.length === fMaxCount) offset++;
+    if (items.length === fMaxCount) {
+      offset++;
+
+      logger.info(`${offset + 1} проход по друзьям`)
+    }
 
     // Всего может быть 10_000 друзей не больше
     if (items.length !== fMaxCount) isScrap = false;
@@ -229,7 +233,6 @@ export const getFolowers = async (vk, user_id, name) => {
   let folowers = {};
   let isScrap = true;
   let offsetCount = 0;
-  const offset = 1_00;
 
   logger.type(`Получаю подписчиков для пользователя ${name ?? user_id}`);
 

@@ -71,7 +71,7 @@ const getMainUserInfo = async () => {
 
     writeToJSON({
       path: '../results/example',
-      name: `friend-API-${bDate()}`,
+      name: `friends-API-${bDate()}`,
       data: userFriends,
     });
   }
@@ -89,29 +89,37 @@ const getFriendsCountUser = async () => {
     '../results/example'
   ]);
 
-  for (const { id, first_name, last_name } of friends) {
+  let friends = await readJSONFile({
+    name: 'friend-API-2024-12-09',
+    path:'../results/example'
+  });
+
+  for (const curFriend of friends) {
+    const { id, first_name, last_name } = curFriend;
+
     const name = `${first_name} ${last_name}`;
     allProfiles++;
 
-    const fIdx = friends.findIndex((el) => el.id === id);
+    logger.group(`Сбор информации о пользователе ${name}, это ${allProfiles} пользователь`)
 
     try {
       const userFriends = await getUserFriends(vk, id, name);
-
       const { items, count } = userFriends;
-      friends[fIdx].friendsCount = count;
+
+      curFriend.friendsCount = count;
       friends[fIdx].friends = items;
 
       openProfiles++;
     } catch (error) {
       logger.error(`Профиль для ${name} закрыт.`);
 
-      friends[fIdx].friendsCount = 0;
+      curFriend.friendsCount = 0;
       friends[fIdx].friends = [];
 
       closeProfiles++;
     }
 
+    logger.endGroup();
     await delayF(500);
   }
 
@@ -129,21 +137,25 @@ const getFriendsCountUser = async () => {
 
   const newFriendsLToS = newFriends.reverse();
 
+  logger.type('');
+  logger.type('');
   logger.success(`Всего обработано ${allProfiles} профилей`);
   logger.success(`Открытых ${openProfiles} профилей`);
   logger.success(`Закрытых ${closeProfiles} профилей`);
 
-  writeToJSON({
-    path: '../results/example',
-    name: `friend-API-full-sort-${bDate()}`,
-    data: newFriends,
-    spices: 0
-  });
+  // writeToJSON({
+  //   path: '../results/example',
+  //   name: `friend-API-full-sort-${bDate()}`,
+  //   data: newFriends,
+  //   spices: 0
+  // });
 
   writeToJSON({
     path: '../results/example',
-    name: `friend-API-full-sort-ls-${bDate()}`,
+    name: `friend-API-sort-${bDate()}`,
     data: newFriendsLToS,
-    spices: 0
+    spices: 2
   });
 }
+
+getFriendsCountUser();
