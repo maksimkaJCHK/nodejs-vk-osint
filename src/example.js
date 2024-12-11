@@ -17,7 +17,7 @@ import {
   createFolders,
 } from './services/fs.js';
 
-import { getUserFriAndInt } from './hof/services.js';
+import { getUserFreAndInf } from './hof/services.js';
 
 import delayF from './services/delay.js';
 import { bDate } from './services/helpers.js';
@@ -36,6 +36,10 @@ const getTypeInfAboutUsers = async () => {
 
   if (friends && friends.length) {
     const savePath = '../results/user_friends';
+    const allUsers = friends.length;
+    let errorCount = 0;
+    let infoErrorUsers = [];
+    let isInfoParser = true;
 
     createFolders([
       '../results',
@@ -44,11 +48,11 @@ const getTypeInfAboutUsers = async () => {
   
     for (const item of friends) {
       const { id, name } = item;
-  
+
       logger.group(`Собираю информацию о пользователе - ${name}`);
-  
+
       try {
-        const data = await getUserFriAndInt({ vk, id, name });
+        const data = await getUserFreAndInf({ vk, id, name });
 
         writeToJSON({
           path: savePath,
@@ -58,16 +62,33 @@ const getTypeInfAboutUsers = async () => {
       } catch (error) {
         errorHandling(error, name);
         logger.error(`Не удалось собрать информацию о ${name}`);
+        errorCount++;
+        infoErrorUsers.push(`-Пользователь "${name}" c id${id};\n`);
 
         if (isStopParser(error)) {
           logger.space();
           logger.error('Дальнейший сбор информации не имеет смысла.');
+          isInfoParser = false;
 
           break;
         }
       }
 
       logger.endGroup();
+    }
+
+    if (isInfoParser) {
+      logger.space();
+      logger.type(`Всего обработано ${allUsers} пользователей`);
+
+      if (errorCount) {
+        logger.disableTimePeriod();
+        logger.type(`Не удалось собрать информацию о ${errorCount} пользователях:`);
+        logger.group()
+        logger.type(infoErrorUsers.join(' '));
+        logger.endGroup();
+        logger.enableTimePeriod();
+      }
     }
   }
 }
@@ -223,4 +244,5 @@ const getFriendsCountUser = async () => {
   }
 }
 
-getFriendsCountUser();
+//getFriendsCountUser();
+getTypeInfAboutUsers();
