@@ -50,6 +50,10 @@ class LoggerServices {
     }
   }
 
+  space() {
+    console.log();
+  }
+
   clear() {
     console.clear();
   }

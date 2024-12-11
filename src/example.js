@@ -56,11 +56,18 @@ const getTypeInfAboutUsers = async () => {
 }
 
 // Получаю информацию о пользователе/пользователях
-const getMainUserInfo = async () => {
+const getUsersInfoFromData = async () => {
+  const savePath = '../results/examples';
+
   createFolders([
     '../results',
-    '../results/example'
+    savePath
   ]);
+
+  let friends = await readJSONFile({
+    name: 'friends-parser',
+    path: savePath
+  });
 
   const friendsIds = friends.map(({ id }) => id);
 
@@ -70,7 +77,7 @@ const getMainUserInfo = async () => {
     logger.success('Всего найдено, ' + userFriends.length);
 
     writeToJSON({
-      path: '../results/example',
+      path: savePath,
       name: `friends-API-${bDate()}`,
       data: userFriends,
     });
@@ -83,15 +90,16 @@ const getFriendsCountUser = async () => {
   let allProfiles = 0;
   let openProfiles = 0;
   let closeProfiles = 0;
+  const savePath = '../results/example';
 
   createFolders([
     '../results',
-    '../results/example'
+    savePath
   ]);
 
   let friends = await readJSONFile({
-    name: 'friend-API-2024-12-09',
-    path:'../results/example'
+    name: 'friends-API-2024-12-10',
+    path: savePath
   });
 
   for (const curFriend of friends) {
@@ -107,14 +115,19 @@ const getFriendsCountUser = async () => {
       const { items, count } = userFriends;
 
       curFriend.friendsCount = count;
-      friends[fIdx].friends = items;
+      curFriend.friends = items;
 
       openProfiles++;
     } catch (error) {
-      logger.error(`Профиль для ${name} закрыт.`);
+      if (error.code === 18) logger.error(`Страница пользователя ${name} удалена, или заблокирована.`);
+      if (error.code === 28) logger.error('Ключ доступа устарел, или не действительный.');
+      if (error.code === 29) logger.error('Лимит на запросы исчерпан.');
+      if (error.code === 30) logger.error(`Профиль для ${name} закрыт.`);
+
+      logger.error(`Не удалось собрать информацию о пользователе ${name}, код ошибки ${error.code}.`);
 
       curFriend.friendsCount = 0;
-      friends[fIdx].friends = [];
+      curFriend.friends = [];
 
       closeProfiles++;
     }
@@ -123,7 +136,8 @@ const getFriendsCountUser = async () => {
     await delayF(500);
   }
 
-  const newFriends = friends.sort((a, b) => {
+  // Я сортирую друзей по нормальному, а мне для моей задачи нужно от большего к меньшему, пока оставлю, а так тут заменить, и ничего переворачивать не нужно
+  friends = friends.sort((a, b) => {
     if (a.friendsCount > b.friendsCount) {
       return 1;
     }
@@ -135,27 +149,34 @@ const getFriendsCountUser = async () => {
     return 0;
   });
 
-  const newFriendsLToS = newFriends.reverse();
+  logger.space();
+  logger.space();
 
-  logger.type('');
-  logger.type('');
   logger.success(`Всего обработано ${allProfiles} профилей`);
   logger.success(`Открытых ${openProfiles} профилей`);
   logger.success(`Закрытых ${closeProfiles} профилей`);
 
+  const nameFile = `friend-API-full-sort-${bDate()}`;
+
+  const paramsSaveFile = {
+    path: savePath,
+    name: nameFile,
+    spices: 0
+  }
+
+  // Пока оставлю, но скорее всего мне это не понадобится
   // writeToJSON({
-  //   path: '../results/example',
-  //   name: `friend-API-full-sort-${bDate()}`,
   //   data: newFriends,
-  //   spices: 0
+  //   ...paramsSaveFile
   // });
 
   writeToJSON({
-    path: '../results/example',
-    name: `friend-API-sort-${bDate()}`,
-    data: newFriendsLToS,
-    spices: 2
+    data: friends.reverse(),
+    ...paramsSaveFile
   });
+
+  logger.space();
+  logger.success(`Файл "${savePath}/${nameFile}" создан.`);
 }
 
 getFriendsCountUser();
