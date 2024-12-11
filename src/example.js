@@ -35,9 +35,11 @@ const getTypeInfAboutUsers = async () => {
   }
 
   if (friends && friends.length) {
+    const savePath = '../results/user_friends';
+
     createFolders([
       '../results',
-      '../results/user_friends'
+      savePath
     ]);
   
     for (const item of friends) {
@@ -49,12 +51,12 @@ const getTypeInfAboutUsers = async () => {
         const data = await getUserFriAndInt({ vk, id, name });
 
         writeToJSON({
-          path: '../results/user_friends',
+          path: savePath,
           name: `${name.replace(/ /, '_')}-friend-${bDate()}`,
           data,
         });
       } catch (error) {
-        errorHandling(error);
+        errorHandling(error, name);
         logger.error(`Не удалось собрать информацию о ${name}`);
 
         if (isStopParser(error)) {
@@ -103,7 +105,7 @@ const getUsersInfoFromData = async () => {
 
         logger.success(`Файл "${savePath}/${nameSaveFile}" создан.`);
       } catch (error) {
-        errorHandling(error);
+        errorHandling(error, ids);
         logger.error(`Информацию о пользователе/ях:\n\n"${ids}"\n\nне удалось собрать.`);
       }
     }
@@ -152,7 +154,7 @@ const getFriendsCountUser = async () => {
 
         openProfiles++;
       } catch (error) {
-        errorHandling(error)
+        errorHandling(error, name)
         logger.error(`Не удалось собрать информацию о пользователе ${name}, код ошибки ${error.code}.`);
 
         if (isStopParser(error)) {
@@ -221,6 +223,4 @@ const getFriendsCountUser = async () => {
   }
 }
 
-//getFriendsCountUser();
-//getUsersInfoFromData();
-//getTypeInfAboutUsers();
+getFriendsCountUser();

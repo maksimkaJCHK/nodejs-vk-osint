@@ -6,7 +6,7 @@ export const isStopParser = ({ code }) => {
   return isError.includes(code);
 }
 
-const errorHandling = ({ code }) => {
+const errorHandling = ({ code }, name = '') => {
   if (code === 5) logger.error('Нужно авторизоваться, или срок действия токена закончился.');
   if (code === 6) logger.error('Слишком много запросов в секунду.');
   if (code === 10) logger.error('Произошла внутренняя ошибка сервера.');
