@@ -8,7 +8,7 @@ import { friends } from './data/data.js';
 import {
   getUserFriends,
   getUsersInfo,
-} from './services/services.js';
+} from './API/index.js';
 
 import {
   readJSONFile,
@@ -57,7 +57,7 @@ const getTypeInfAboutUsers = async () => {
 
 // Получаю информацию о пользователе/пользователях
 const getUsersInfoFromData = async () => {
-  const savePath = '../results/examples';
+  const savePath = '../results/example';
 
   createFolders([
     '../results',
@@ -119,6 +119,10 @@ const getFriendsCountUser = async () => {
 
       openProfiles++;
     } catch (error) {
+      if (error.code === 5) logger.error('Нужно авторизоваться, или срок действия токена закончился.');
+      if (error.code === 6) logger.error('Слишком много запросов в секунду.');
+      if (error.code === 10) logger.error('Произошла внутренняя ошибка сервера.');
+      if (error.code === 15) logger.error('Доступ запрещен.');
       if (error.code === 18) logger.error(`Страница пользователя ${name} удалена, или заблокирована.`);
       if (error.code === 28) logger.error('Ключ доступа устарел, или не действительный.');
       if (error.code === 29) logger.error('Лимит на запросы исчерпан.');

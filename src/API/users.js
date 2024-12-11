@@ -1,9 +1,6 @@
 import logger from '../logger/logger.js';
 import delayF from '../services/delay.js';
 
-// Как правило друзей и групп отдается не больше 5_000 поэтому это значение я вынесу в переменную
-const maxCount = 5_000;
-
 // user_ids - id-ки пользователей через запятую, или их псевдонимы
 export const getUsersInfo = async (vk, user_ids, names) => {
   const users = await vk.api.users.get({
@@ -74,87 +71,15 @@ export const getUsersInfo = async (vk, user_ids, names) => {
   return users;
 }
 
-// Тут я получаю пользователей группы
-export const getMembersGroup = async (vk, group_id, nameGroup) => {
-  let members = {};
-  let isScrap = true;
-  let offsetCount = 0;
-  const offset = 1_000;
-  
-  while (isScrap) {
-    const membersAPI = await vk.api.groups.getMembers({
-      group_id,
-      offset: offset * offsetCount,
-      fields: [
-        'bdate',
-        'can_post',
-        'can_see_all_posts',
-        'can_see_audio',
-        'can_write_private_message',
-        'city',
-        'common_count',
-        'connections',
-        'contacts',
-        'country',
-        'domain',
-        'education',
-        'has_mobile',
-        'last_seen',
-        'lists',
-        'online',
-        'online_mobile',
-        'photo_100',
-        'photo_200',
-        'photo_200_orig',
-        'photo_400_orig',
-        'photo_50',
-        'photo_max',
-        'photo_max_orig',
-        'relation',
-        'relatives',
-        'schools',
-        'sex',
-        'site',
-        'status',
-        'universities',
-      ],
-    });
-
-    const { count, items } = membersAPI;
-
-    if (offsetCount === 0) {
-      members = {
-        count: items.length,
-        items
-      }
-    }
-
-    if (offsetCount !== 0) {
-      members.count += items.length;
-      members.items = [ ...members.items, ...items ];
-    }
-
-    offsetCount++;
-
-    if (count <= members.items.length) isScrap = false;
-
-    await delayF(400);
-  }
-
-  logger.success(`Информация о пользователях группы (${nameGroup ?? group_id}) получена.`);
-
-  return members;
-}
-
 export const getUserFriends = async (vk, user_id, name) => {
+  // Схитрю, всего может быть 10_000 друзей, поэтому, если их будет четко 10_000, то я по тому, что их возвращается не 4_999 смогу понять, что запрос делать не нужно, тут API кривое, count всегда 5_000 отдает, даже если друзей 8_000 и я по второму разу делаю запрос, иначе я не пойму когда остановиться
+  const fMaxCount = 4_999;
   let isScrap = true;
   let offset = 0;
   let friends = {};
-  let fMaxCount = maxCount - 1;
 
   logger.success(`Информация сбор информации о пользователе ${name ?? user_id}.`);
 
-  // Схитрю, всего может быть 10_000 друзей, поэтому, если их будет четко 10_000, то я по тому, что их возвращается не 4_999 (maxCount - 1) смогу понять, что запрос делать не нужно, тут API кривое, count всегда 5_000 отдает, даже если друзей 8_000 и я по второму разу делаю запрос, иначе я не пойму когда остановиться
   while (isScrap) {
     const friendsAPI = await vk.api.friends.get({
       user_id,

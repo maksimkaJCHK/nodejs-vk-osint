@@ -4,7 +4,7 @@ import {
   getFolowers,
   getGroups,
   getUsersInfo
-} from '../services/services.js';
+} from '../API/index.js';
 
 export const getUserFriAndInt = async ({ vk, id, name }) => {
   const userFriends = await getUserFriends(vk, id, name);
