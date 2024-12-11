@@ -1,5 +1,11 @@
 import logger from '../logger/logger.js';
 
+export const isStopParser = ({ code }) => {
+  const isError = [5, 28, 29];
+
+  return isError.includes(code);
+}
+
 const errorHandling = ({ code }) => {
   if (code === 5) logger.error('Нужно авторизоваться, или срок действия токена закончился.');
   if (code === 6) logger.error('Слишком много запросов в секунду.');
