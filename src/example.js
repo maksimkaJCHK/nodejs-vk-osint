@@ -20,7 +20,13 @@ import {
 import { getUserFreAndInf } from './hof/services.js';
 
 import delayF from './services/delay.js';
-import { bDate } from './services/helpers.js';
+
+import {
+  bDate,
+  parseFriends,
+  parseGroups,
+  parseSubscriptions
+} from './services/helpers.js';
 
 const token = getToken();
 
@@ -244,5 +250,84 @@ const getFriendsCountUser = async () => {
   }
 }
 
-//getFriendsCountUser();
-getTypeInfAboutUsers();
+const compareFriend = async (name) => {
+  const folder = '../results/example';
+
+  let firstFriendData = await readJSONFile({
+    name: `${name}-friend-2024-11-03`,
+    path: folder
+  });
+
+  let lastFriendData = await readJSONFile({
+    name: `${name}-friend-2024-12-12`,
+    path: folder
+  });
+
+  const infoAboutFriends = parseFriends(firstFriendData, lastFriendData);
+  const {
+    countRemovedFriends,
+    countAddFriends,
+    removedFriends,
+    addFriends
+  } = infoAboutFriends;
+
+  const infoAboutGroups = parseGroups(firstFriendData, lastFriendData);
+  const {
+    countRemovedGroups,
+    countAddGroups,
+    removedGroups,
+    addGroups
+  } = infoAboutGroups;
+
+  const infoAboutSub = parseSubscriptions(firstFriendData, lastFriendData);
+
+  const {
+    countRemovedSubGroups,
+    countAddSubGroups,
+    countRemovedSubUsers,
+    countAddSubUsers,
+    removedSubGroups,
+    addSubGroups,
+    removedSubUsers,
+    addSubUsers
+  } = infoAboutSub;
+
+  const data = {
+    countRemovedFriends,
+    countAddFriends,
+    countRemovedGroups,
+    countAddGroups,
+    countRemovedSubGroups,
+    countAddSubGroups,
+    countRemovedSubUsers,
+    countAddSubUsers,
+    removedFriends,
+    addFriends,
+    removedGroups,
+    addGroups,
+    removedSubGroups,
+    addSubGroups,
+    removedSubUsers,
+    addSubUsers
+  }
+
+  writeToJSON({
+    path: folder,
+    name: `${name}-compare-${bDate()}`,
+    data,
+  });
+}
+
+const infoForFriends = async () => {
+  const constNameArr = [
+    'Павел_Дуров'
+  ];
+
+  for (const name of constNameArr) {
+    await compareFriend(name);
+
+    logger.type(`Сравниили пользователя - ${name}`);
+  };
+}
+
+infoForFriends();

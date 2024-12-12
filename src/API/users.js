@@ -260,9 +260,11 @@ export const getFolowers = async (vk, user_id, name) => {
 }
 
 export const getGroups = async (vk, user_id, name) => {
+  // Во вконтакте у пользователя почему-то групп больше чем тут отдается, но реально тут отдается правильно, если их пересчитать, то тут правильно, не знаю почему.
   const groups = await vk.api.groups.get({
     user_id,
     count: 1_000,
+    extended: 0, //Если 1 то вернется полная информация о группах
     fields: [
       'activity',
       'can_create_topic',
