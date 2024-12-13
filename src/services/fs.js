@@ -34,7 +34,11 @@ export const writeToJSON = ({
   data,
   spices = 2
 }) => {
-  fs.appendFileSync(`${path}/${name}.json`, JSON.stringify(data, null, spices));
+  const errorFun = (error) => {
+    if (error) console.log(error);
+  }
+
+  fs.writeFile(`${path}/${name}.json`, JSON.stringify(data, null, spices), errorFun);
 };
 
 export const createFolders = (paths) => paths.forEach((path) => makeFolder(path));

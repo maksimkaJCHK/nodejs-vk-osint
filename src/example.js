@@ -330,4 +330,119 @@ const infoForFriends = async () => {
   };
 }
 
-infoForFriends();
+const searchUserInFriends = (users, userId) => {
+  const idx = users.findIndex(({ id }) => id === userId);
+
+  return idx !== -1;
+}
+
+const searchUserInFriendsJSON = async (userId, nameUser = 'user') => {
+  const folder = '../results/example';
+  const name = 'example';
+
+  const friendsArr = await readJSONFile({
+    name,
+    path: folder
+  });
+
+  logger.info(`Прочитал значение их файла ${folder}/${name}.`);
+
+  const notFriend = [];
+  const notFriendIds = [];
+  const closedFriend = [];
+  const closedFriendIds = [];
+
+  friendsArr.forEach(({
+    friends,
+    first_name,
+    last_name,
+    is_closed,
+    id
+  }) => {
+    const isUserInFriend = searchUserInFriends(friends, userId);
+
+    const name = `${first_name} ${last_name}`;
+
+    if (isUserInFriend && !is_closed) {
+      const buildLog = `Пользователь ${name} с id-ом "${id}" является другом ${nameUser}.`;
+      logger.success(buildLog);
+    }
+
+    if (!isUserInFriend && !is_closed) {
+      const buildLog = `Пользователь ${name} с id-ом "${id}" не является другом ${nameUser}.`;
+
+      notFriend.push({
+        name,
+        id
+      });
+      notFriendIds.push(id);
+
+      logger.error(buildLog);
+    }
+
+    if (is_closed) {
+      const buildLog = `Пользователь ${name} с id-ом "${id}" закрыл свои данные.`;
+
+      closedFriend.push({
+        name,
+        id
+      });
+      closedFriendIds.push(id);
+
+      logger.error(buildLog);
+    }
+  });
+
+  logger.space();
+  logger.success(`В друзьях у ${nameUser} нет ${notFriendIds.length} пользователей.`);
+  logger.success(`Всего закрытых пользователи ${closedFriendIds.length}.`);
+
+  writeToJSON({
+    path: folder,
+    name: 'info-not-friend',
+    data: {
+      notFriendIds,
+      notFriend,
+      closedFriendIds,
+      closedFriend,
+    }
+  });
+}
+
+const clearOldFriend = async () => {
+  const folder = '../results/example';
+  const nameCurArr = 'example';
+  const nameFArr = 'info-not-friend';
+
+  logger.info(`Чтение из файла "${folder}/${nameCurArr}".`);
+
+  let curArr = await readJSONFile({
+    name: nameCurArr,
+    path: folder
+  });
+
+  logger.info(`Чтение из файла "${folder}/${nameFArr}".`);
+
+  const deleteArr = await readJSONFile({
+    name: nameFArr,
+    path: folder
+  });
+
+  logger.info(`Первоначально в массиве ${curArr.length} элементов.`);
+  logger.info(`Нужно удалить ${deleteArr.notFriendIds.length} элементов.`);
+
+  curArr = curArr.filter(({id}) => !deleteArr.notFriendIds.includes(id));
+
+  logger.info(`Теперь в массиве ${curArr.length} элементов.`);
+
+  writeToJSON({
+    path: folder,
+    name: nameCurArr,
+    data: curArr,
+    spices: 0
+  });
+
+  logger.info(`Файл "${folder}/${nameCurArr}.json" перезаписан.`);
+}
+
+clearOldFriend();
