@@ -34,6 +34,9 @@ const vk = new VK({
   token
 });
 
+
+logger.disableDate();
+
 // Получаю друзей, подписки, подписчиков, группы
 const getTypeInfAboutUsers = async () => {
   if (friends && !friends.length) {
@@ -145,7 +148,7 @@ const getUsersInfoFromData = async () => {
 
 const getFriendsCountUser = async () => {
   const savePath = '../results/example';
-  const nameFile = 'friends-API-2024-12-10';
+  const nameFile = 'friends-API-2024-12-17';
 
   let friends = await readJSONFile({
     name: nameFile,
@@ -431,7 +434,7 @@ const clearOldFriend = async () => {
   logger.info(`Первоначально в массиве ${curArr.length} элементов.`);
   logger.info(`Нужно удалить ${deleteArr.notFriendIds.length} элементов.`);
 
-  curArr = curArr.filter(({id}) => !deleteArr.notFriendIds.includes(id));
+  curArr = curArr.filter(({ id }) => !deleteArr.notFriendIds.includes(id));
 
   logger.info(`Теперь в массиве ${curArr.length} элементов.`);
 
@@ -439,10 +442,166 @@ const clearOldFriend = async () => {
     path: folder,
     name: nameCurArr,
     data: curArr,
-    spices: 0
   });
 
   logger.info(`Файл "${folder}/${nameCurArr}.json" перезаписан.`);
 }
 
-clearOldFriend();
+const findNewFriends = async () => {
+  const folder = '../results/example';
+  const nameFile = 'friends-parser';
+  let newUsers = 0;
+
+  logger.info(`Чтение из файла "${folder}/${nameFile}".`);
+
+  let curArr = await readJSONFile({
+    name: nameFile,
+    path: folder
+  });
+
+  logger.info(`Всего в друзьях ${curArr.length} пользователей.`);
+
+  const curIds = curArr.map(({ id }) => id);
+
+  for (const friend of friends) {
+    const { id, name } = friend;
+    const isFriend = curIds.includes(id);
+    let bFraze = '';
+
+    if (isFriend) bFraze = `Пользователь ${name} есль в друзьях.`;
+
+    if (!isFriend) {
+      bFraze = `Пользователя ${name} нет в друзьяхи и сейчас будет добавлен.`;
+      newUsers++;
+
+      curArr = [
+        friend,
+        ...curArr
+      ]
+    }
+
+    logger.success(bFraze);
+  }
+
+  const bFraze = newUsers
+    ? `Найдено ${newUsers} новых пользователей.`
+    : 'Новых пользователей не найдено.';
+
+  logger.space();
+  logger.success(bFraze);
+
+  if (newUsers) {
+    writeToJSON({
+      path: folder,
+      name: nameFile,
+      data: curArr,
+    });
+
+    logger.info(`Всего в друзьях ${curArr.length} пользователей.`);
+  }
+}
+
+const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
+  const folder = '../results/example';
+  const nameFile = 'friends-parser';
+
+  logger.info(`Чтение из файла "${folder}/${nameFile}".`);
+
+  let curArr = await readJSONFile({
+    name: nameFile,
+    path: folder
+  });
+
+  const curIds = curArr.map(({ id }) => id);
+
+  const usersCompare = [
+    'Марка_Цукермана',
+  ];
+
+  const prefix = '-compare-2024-12-12';
+  let newUserCount = 0;
+  const newUser = [];
+  const usersInfo = {};
+  const friendFolder = '../results/user_friends';
+
+  for (const user of usersCompare) {
+    logger.group(`Сбор информации о пользователе ${user}.`);
+    
+    let data = await readJSONFile({
+      name: user + prefix,
+      path: friendFolder
+    });
+
+    if (data?.addFriends.length) {
+      for (const friend of data.addFriends) {
+        const { id, first_name, last_name } = friend;
+        const name = `${first_name} ${last_name}`;
+
+        logger.group(`Сбор информации о пользователе ${name}.`);
+
+        if (usersInfo[name]) {
+          logger.info(`Информация о пользователе ${name} уже запрашивалась.`);
+
+          usersInfo[name].id = id;
+          usersInfo[name].count++;
+          usersInfo[name].commonUsers.push(user);
+        } else {
+          try {
+            const userFriends = await getUserFriends(vk, id, name);
+
+            userFriends.items.forEach((item) => {
+              if (item.id === findId && !curIds.includes(id)) {
+                logger.info(`Пользователь ${name} есть в друзьях у ${nameUser}.`);
+
+                usersInfo[name] = {
+                  id,
+                  count: 1,
+                  commonUsers: [user]
+                }
+
+                newUserCount++;
+                newUser.push({
+                  id,
+                  name,
+                  nick: `id${id}`
+                });
+              }
+            });
+          } catch (error) {
+            errorHandling(error, name);
+            logger.error(`Не удалось собрать информацию о пользователе ${name}, код ошибки ${error.code}.`);
+
+            usersInfo[name] = {
+              id,
+              count: 1,
+              commonUsers: [user]
+            }
+          }
+        }
+
+        logger.endGroup();
+        await delayF(2_000);
+      };
+    }
+    logger.endGroup();
+  }
+
+  logger.success(`Найдено новых пользователей - ${newUserCount}.`);
+
+  writeToJSON({
+    path: folder,
+    name: 'friends-parser',
+    data: [
+      ...newUser,
+      ...curArr
+    ],
+  });
+
+  writeToJSON({
+    path: friendFolder,
+    name: 'compare-info',
+    data: usersInfo,
+  });
+}
+
+findNewFriendFromCompare(1, 'Пользователя');

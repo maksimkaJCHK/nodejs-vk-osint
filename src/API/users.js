@@ -264,7 +264,7 @@ export const getGroups = async (vk, user_id, name) => {
   const groups = await vk.api.groups.get({
     user_id,
     count: 1_000,
-    extended: 0, //Если 1 то вернется полная информация о группах
+    extended: 1, //Если 1 то вернется полная информация о группах
     fields: [
       'activity',
       'can_create_topic',
