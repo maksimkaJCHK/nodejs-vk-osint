@@ -78,7 +78,7 @@ export const getUserFriends = async (vk, user_id, name) => {
   let offset = 0;
   let friends = {};
 
-  logger.success(`Информация сбор информации о пользователе ${name ?? user_id}.`);
+  logger.success(`Сбор информации о пользователе ${name ?? user_id}.`);
 
   while (isScrap) {
     const friendsAPI = await vk.api.friends.get({
@@ -120,7 +120,7 @@ export const getUserFriends = async (vk, user_id, name) => {
       logger.info(`${offset + 1} проход по друзьям`)
     }
 
-    // Всего может быть 10_000 друзей не больше
+    // Всего может быть 10_000 друзей, не больше
     if (items.length !== fMaxCount) isScrap = false;
   }
 
@@ -251,7 +251,7 @@ export const getFolowers = async (vk, user_id, name) => {
     offsetCount++;
     logger.info(`Получил ${folowers.items.length} подписчиков`);
 
-    await delayF(400);
+    await delayF();
   }
 
   logger.success(`Собрал подписчиков для пользователя ${name ?? user_id}`);

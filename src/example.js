@@ -133,7 +133,7 @@ const getUsersInfoFromData = async () => {
           data: userFriends,
         });
 
-        logger.success(`Файл "${savePath}/${nameSaveFile}" создан.`);
+        logger.success(`Файл "${savePath}/${nameSaveFile}.json" создан.`);
       } catch (error) {
         errorHandling(error, ids);
         logger.error(`Информацию о пользователе/ях:\n\n"${ids}"\n\nне удалось собрать.`);
@@ -148,7 +148,7 @@ const getUsersInfoFromData = async () => {
 
 const getFriendsCountUser = async () => {
   const savePath = '../results/example';
-  const nameFile = 'friends-API-2024-12-17';
+  const nameFile = 'friends-API-2024-12-18';
 
   let friends = await readJSONFile({
     name: nameFile,
@@ -202,7 +202,7 @@ const getFriendsCountUser = async () => {
       }
 
       logger.endGroup();
-      await delayF(500);
+      await delayF();
     }
 
     if (isFriendParser) {
@@ -246,7 +246,7 @@ const getFriendsCountUser = async () => {
       });
 
       logger.space();
-      logger.success(`Файл "${savePath}/${nameFile}" создан.`);
+      logger.success(`Файл "${savePath}/${nameFile}.json" создан.`);
     }
   } else {
     logger.error(`Не удалось прочитать информацию из файла "${savePath}/${nameFile}.json".`);
@@ -417,14 +417,14 @@ const clearOldFriend = async () => {
   const nameCurArr = 'example';
   const nameFArr = 'info-not-friend';
 
-  logger.info(`Чтение из файла "${folder}/${nameCurArr}".`);
+  logger.info(`Чтение из файла "${folder}/${nameCurArr}.json".`);
 
   let curArr = await readJSONFile({
     name: nameCurArr,
     path: folder
   });
 
-  logger.info(`Чтение из файла "${folder}/${nameFArr}".`);
+  logger.info(`Чтение из файла "${folder}/${nameFArr}.json".`);
 
   const deleteArr = await readJSONFile({
     name: nameFArr,
@@ -452,7 +452,7 @@ const findNewFriends = async () => {
   const nameFile = 'friends-parser';
   let newUsers = 0;
 
-  logger.info(`Чтение из файла "${folder}/${nameFile}".`);
+  logger.info(`Чтение из файла "${folder}/${nameFile}.json".`);
 
   let curArr = await readJSONFile({
     name: nameFile,
@@ -505,7 +505,7 @@ const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
   const folder = '../results/example';
   const nameFile = 'friends-parser';
 
-  logger.info(`Чтение из файла "${folder}/${nameFile}".`);
+  logger.info(`Чтение из файла "${folder}/${nameFile}.json".`);
 
   let curArr = await readJSONFile({
     name: nameFile,
@@ -580,7 +580,7 @@ const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
         }
 
         logger.endGroup();
-        await delayF(2_000);
+        await delayF();
       };
     }
     logger.endGroup();
@@ -603,5 +603,3 @@ const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
     data: usersInfo,
   });
 }
-
-findNewFriendFromCompare(1, 'Пользователя');
