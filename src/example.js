@@ -605,7 +605,7 @@ const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
 }
 
 const findNewFriendFromData = async (userId, sId) => {
-  const folder = '../results/nastya_friends';
+  const folder = '../results/example';
   const nameFile = 'friend-API-full-sort-2024-12-18';
 
   logger.info(`Чтение из файла "${folder}/${nameFile}.json".`);
