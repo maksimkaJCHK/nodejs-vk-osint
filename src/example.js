@@ -675,7 +675,7 @@ const findNewFriendFromData = async (userId, sId) => {
             }
           }
 
-          await delayF(3_000);
+          await delayF();
         }
 
         logger.endGroup();
@@ -694,9 +694,96 @@ const findNewFriendFromData = async (userId, sId) => {
           name: nameFile,
           data: newFriends,
         });
-  
+
         logger.success(`Файл "${folder}/${nameFile}.json" создан.`);
       }
+    }
+  }
+}
+
+const deletedFriend = async (sUserId) => {
+  const folder = '../results/example';
+  const nameFile = 'friends-parser';
+
+  logger.info(`Чтение из файла "${folder}/${nameFile}.json".`);
+
+  let curData = await readJSONFile({
+    name: nameFile,
+    path: folder
+  });
+
+  if (!curData) {
+    logger.error('Список пользователей пуст, не о ком собирать информацию.');
+  }
+
+  if (curData) {
+    let deletedUsers = [];
+    let count = 0;
+    const allUsersLength = curData.length;
+
+    for (const user of curData) {
+      const { id, name } = user;
+      count++;
+
+      logger.group(`Сбор информации о пользователе ${name} с id${id} - это ${count} пользователь из ${allUsersLength}.`);
+
+      try {
+        const friends = await getUserFriends(vk, id, name);
+        const { items } =  friends;
+
+        const isFriend = items.findIndex(({ id }) => id === sUserId) !== -1;
+
+        if (isFriend) logger.info(`Пользователь ${name} есть в друзьях.`);
+
+        if (!isFriend) {
+          deletedUsers.push(user);
+          logger.success(`Пользователь ${name} с id${id} удален из друзей.`);
+        }
+      } catch (error) {
+        errorHandling(error, name);
+        logger.error(`Не удалось собрать информацию о ${name}.`);
+
+        if (isStopParser(error)) {
+          logger.space();
+          logger.error('Дальнейший сбор информации не имеет смысла.');
+
+          break;
+        }
+      }
+
+      logger.endGroup();
+
+      await delayF();
+    };
+
+    logger.space();
+    logger.success(`Всего проверено ${count} пользователей.`)
+    logger.success(`Всего удалено ${deletedUsers.length} пользователей.`);
+
+    if (deletedUsers.length) {
+      const nameDUFile = `deleted-users-${bDate()}`;
+
+      writeToJSON({
+        path: folder,
+        name: nameDUFile,
+        data: deletedUsers,
+      });
+
+      logger.success(`Файл "${folder}/${nameDUFile}.json" создан.`);
+      logger.info(`Первоначально было ${curData.length} друзей.`);
+
+      deletedUsers = deletedUsers.map(({ id }) => id);
+      curData = curData.filter(({ id }) => !deletedUsers.includes(id));
+
+      logger.info(`Стало ${curData.length} друзей.`);
+
+      writeToJSON({
+        path: folder,
+        name: nameFile,
+        data: curData,
+      });
+
+      logger.success(`Файл "${folder}/${nameFile}.json" создан.`);
     }
   }
 }
