@@ -148,7 +148,7 @@ const getUsersInfoFromData = async () => {
 
 const getFriendsCountUser = async () => {
   const savePath = '../results/example';
-  const nameFile = 'friends-API-2024-12-18';
+  const nameFile = 'example';
 
   let friends = await readJSONFile({
     name: nameFile,
@@ -162,6 +162,8 @@ const getFriendsCountUser = async () => {
       '../results',
       savePath
     ]);
+
+    await delayF();
 
     let allProfiles = 0;
     let openProfiles = 0;
@@ -787,3 +789,5 @@ const deletedFriend = async (sUserId) => {
     }
   }
 }
+
+getFriendsCountUser();
