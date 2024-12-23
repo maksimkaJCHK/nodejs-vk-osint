@@ -594,7 +594,7 @@ const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
 
 const findNewFriendFromData = async (userId, sId) => {
   const folder = '../results/example';
-  const nameFile = 'friend-API-full-sort-2024-12-18';
+  const nameFile = 'example';
 
   let curData = await readJSONFile({
     name: nameFile,
@@ -766,3 +766,5 @@ const deletedFriend = async (sUserId) => {
     }
   }
 }
+
+findNewFriendFromData(225575347, 154438324)
