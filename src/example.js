@@ -767,4 +767,4 @@ const deletedFriend = async (sUserId) => {
   }
 }
 
-findNewFriendFromData(225575347, 154438324)
+getTypeInfAboutUsers();
