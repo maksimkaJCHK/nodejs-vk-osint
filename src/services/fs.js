@@ -15,7 +15,7 @@ export const makeFolder = (nameFolder) => {
 export const readJSONFile = ({ name, path = './results/' }) => new Promise((resolve, reject) => {
   let obj;
 
-  logger.info(`Считываю значение их файла "${path}/${name}.json" создан.`);
+  logger.info(`Считываю значение их файла "${path}/${name}.json".`);
 
   fs.readFile(`${path}/${name}.json`, 'utf8', function(err, data) {
     if (err) {
