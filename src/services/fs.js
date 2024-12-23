@@ -15,6 +15,8 @@ export const makeFolder = (nameFolder) => {
 export const readJSONFile = ({ name, path = './results/' }) => new Promise((resolve, reject) => {
   let obj;
 
+  logger.info(`Считываю значение их файла "${path}/${name}.json" создан.`);
+
   fs.readFile(`${path}/${name}.json`, 'utf8', function(err, data) {
     if (err) {
       resolve(null);
@@ -26,6 +28,8 @@ export const readJSONFile = ({ name, path = './results/' }) => new Promise((reso
 
     resolve(obj);
   });
+
+  logger.info(`Прочитал значение их файла "${path}/${name}.json".`);
 });
 
 export const writeToJSON = ({
@@ -39,6 +43,8 @@ export const writeToJSON = ({
   }
 
   fs.writeFile(`${path}/${name}.json`, JSON.stringify(data, null, spices), errorFun);
+
+  logger.success(`Файл "${path}/${name}.json" создан.`);
 };
 
 export const createFolders = (paths) => paths.forEach((path) => makeFolder(path));

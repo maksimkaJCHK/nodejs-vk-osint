@@ -132,8 +132,6 @@ const getUsersInfoFromData = async () => {
           name: nameSaveFile,
           data: userFriends,
         });
-
-        logger.success(`Файл "${savePath}/${nameSaveFile}.json" создан.`);
       } catch (error) {
         errorHandling(error, ids);
         logger.error(`Информацию о пользователе/ях:\n\n"${ids}"\n\nне удалось собрать.`);
@@ -246,9 +244,6 @@ const getFriendsCountUser = async () => {
         data: friends.reverse(),
         ...paramsSaveFile
       });
-
-      logger.space();
-      logger.success(`Файл "${savePath}/${nameFile}.json" создан.`);
     }
   } else {
     logger.error(`Не удалось прочитать информацию из файла "${savePath}/${nameFile}.json".`);
@@ -269,6 +264,7 @@ const compareFriend = async (name) => {
   });
 
   const infoAboutFriends = parseFriends(firstFriendData, lastFriendData);
+
   const {
     countRemovedFriends,
     countAddFriends,
@@ -350,8 +346,6 @@ const searchUserInFriendsJSON = async (userId, nameUser = 'user') => {
     path: folder
   });
 
-  logger.info(`Прочитал значение их файла ${folder}/${name}.`);
-
   const notFriend = [];
   const notFriendIds = [];
   const closedFriend = [];
@@ -426,8 +420,6 @@ const clearOldFriend = async () => {
     path: folder
   });
 
-  logger.info(`Чтение из файла "${folder}/${nameFArr}.json".`);
-
   const deleteArr = await readJSONFile({
     name: nameFArr,
     path: folder
@@ -445,16 +437,12 @@ const clearOldFriend = async () => {
     name: nameCurArr,
     data: curArr,
   });
-
-  logger.info(`Файл "${folder}/${nameCurArr}.json" перезаписан.`);
 }
 
 const findNewFriends = async () => {
   const folder = '../results/example';
   const nameFile = 'friends-parser';
   let newUsers = 0;
-
-  logger.info(`Чтение из файла "${folder}/${nameFile}.json".`);
 
   let curArr = await readJSONFile({
     name: nameFile,
@@ -506,8 +494,6 @@ const findNewFriends = async () => {
 const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
   const folder = '../results/example';
   const nameFile = 'friends-parser';
-
-  logger.info(`Чтение из файла "${folder}/${nameFile}.json".`);
 
   let curArr = await readJSONFile({
     name: nameFile,
@@ -610,8 +596,6 @@ const findNewFriendFromData = async (userId, sId) => {
   const folder = '../results/example';
   const nameFile = 'friend-API-full-sort-2024-12-18';
 
-  logger.info(`Чтение из файла "${folder}/${nameFile}.json".`);
-
   let curData = await readJSONFile({
     name: nameFile,
     path: folder
@@ -696,8 +680,6 @@ const findNewFriendFromData = async (userId, sId) => {
           name: nameFile,
           data: newFriends,
         });
-
-        logger.success(`Файл "${folder}/${nameFile}.json" создан.`);
       }
     }
   }
@@ -706,8 +688,6 @@ const findNewFriendFromData = async (userId, sId) => {
 const deletedFriend = async (sUserId) => {
   const folder = '../results/example';
   const nameFile = 'friends-parser';
-
-  logger.info(`Чтение из файла "${folder}/${nameFile}.json".`);
 
   let curData = await readJSONFile({
     name: nameFile,
@@ -771,7 +751,6 @@ const deletedFriend = async (sUserId) => {
         data: deletedUsers,
       });
 
-      logger.success(`Файл "${folder}/${nameDUFile}.json" создан.`);
       logger.info(`Первоначально было ${curData.length} друзей.`);
 
       deletedUsers = deletedUsers.map(({ id }) => id);
@@ -784,10 +763,6 @@ const deletedFriend = async (sUserId) => {
         name: nameFile,
         data: curData,
       });
-
-      logger.success(`Файл "${folder}/${nameFile}.json" создан.`);
     }
   }
 }
-
-getFriendsCountUser();
