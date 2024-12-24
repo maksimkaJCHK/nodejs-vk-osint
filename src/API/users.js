@@ -73,7 +73,7 @@ export const getUsersInfo = async (vk, user_ids, names) => {
 
 export const getUserFriends = async (vk, user_id, name) => {
   // Схитрю, всего может быть 10_000 друзей, поэтому, если их будет четко 10_000, то я по тому, что их возвращается не 4_999 смогу понять, что запрос делать не нужно, тут API кривое, count всегда 5_000 отдает, даже если друзей 8_000 и я по второму разу делаю запрос, иначе я не пойму когда остановиться
-  const fMaxCount = 4_999;
+  const fMaxCount = 2_999;
   let isScrap = true;
   let offset = 0;
   let friends = {};

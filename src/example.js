@@ -594,7 +594,7 @@ const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
 
 const findNewFriendFromData = async (userId, sId) => {
   const folder = '../results/example';
-  const nameFile = 'example';
+  const nameFile = 'example-file';
 
   let curData = await readJSONFile({
     name: nameFile,
@@ -619,6 +619,7 @@ const findNewFriendFromData = async (userId, sId) => {
 
       curData = curData.friends.filter(({ is_closed }) => !is_closed);
       const newFriends = [];
+      const commonFriends = [];
       let countUser = 0;
       let countIsUser = 0;
 
@@ -631,7 +632,11 @@ const findNewFriendFromData = async (userId, sId) => {
 
         if (friendsIds.includes(id)) {
           countIsUser++;
+          commonFriends.push(user);
+
+          logger.enableBg();
           logger.info(`Пользователь ${name} c id${id} уже есть в друзьях.`);
+          logger.disableBg();
         }
 
         if (id !== sId && !friendsIds.includes(id)) {
@@ -643,7 +648,10 @@ const findNewFriendFromData = async (userId, sId) => {
 
             if (isFriend) {
               newFriends.push(user);
+
+              logger.enableBg();
               logger.success(`Найден новый друг ${name} c id${id}.`);
+              logger.disableBg();
             }
 
             if (!isFriend) {
@@ -678,7 +686,12 @@ const findNewFriendFromData = async (userId, sId) => {
         writeToJSON({
           path: folder,
           name: nameFile,
-          data: newFriends,
+          data: {
+            countIsUser,
+            newFriendsLength: newFriends.length,
+            newFriends,
+            commonFriends,
+          },
         });
       }
     }
@@ -766,5 +779,3 @@ const deletedFriend = async (sUserId) => {
     }
   }
 }
-
-getTypeInfAboutUsers();
