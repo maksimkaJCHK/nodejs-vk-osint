@@ -163,7 +163,7 @@ const getFriendsCountUser = async () => {
 
     await delayF();
 
-    let allProfiles = 0;
+    let currProfiles = 0;
     let openProfiles = 0;
     let closeProfiles = 0;
 
@@ -171,9 +171,9 @@ const getFriendsCountUser = async () => {
       const { id, first_name, last_name } = curFriend;
 
       const name = `${first_name} ${last_name}`;
-      allProfiles++;
+      currProfiles++;
 
-      logger.group(`Сбор информации о пользователе ${name}, это ${allProfiles} пользователь`)
+      logger.group(`Сбор информации о пользователе ${name}, это ${currProfiles} пользователь из ${friends.length}.`)
 
       try {
         const userFriends = await getUserFriends(vk, id, name);
@@ -222,7 +222,7 @@ const getFriendsCountUser = async () => {
       logger.space();
       logger.space();
 
-      logger.success(`Всего обработано ${allProfiles} профилей`);
+      logger.success(`Всего обработано ${currProfiles} профилей`);
       logger.success(`Открытых ${openProfiles} профилей`);
       logger.success(`Закрытых ${closeProfiles} профилей`);
 
