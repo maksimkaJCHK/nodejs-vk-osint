@@ -634,9 +634,7 @@ const findNewFriendFromData = async (userId, sId) => {
           countIsUser++;
           commonFriends.push(user);
 
-          logger.enableBg();
-          logger.info(`Пользователь ${name} c id${id} уже есть в друзьях.`);
-          logger.disableBg();
+          logger.infoBg(`Пользователь ${name} c id${id} уже есть в друзьях.`);
         }
 
         if (id !== sId && !friendsIds.includes(id)) {
@@ -648,10 +646,7 @@ const findNewFriendFromData = async (userId, sId) => {
 
             if (isFriend) {
               newFriends.push(user);
-
-              logger.enableBg();
-              logger.success(`Найден новый друг ${name} c id${id}.`);
-              logger.disableBg();
+              logger.successBg(`Найден новый друг ${name} c id${id}.`);
             }
 
             if (!isFriend) {

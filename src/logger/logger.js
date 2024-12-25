@@ -25,6 +25,42 @@ class Logger extends LoggerServices {
     this.bConsole(mes, 'brightRed');
   }
 
+  typeBg(mes) {
+    this.enableBg();
+    this.bConsole(mes, 'brightWhite');
+    this.disableBg();
+  }
+
+  mesBg(mes) {
+    this.enableBg();
+    this.bConsole(mes, 'brightMagenta');
+    this.disableBg();
+  }
+
+  infoBg(mes) {
+    this.enableBg();
+    this.bConsole(mes, 'brightBlue');
+    this.disableBg();
+  }
+
+  successBg(mes) {
+    this.enableBg();
+    this.bConsole(mes, 'brightGreen');
+    this.disableBg();
+  }
+
+  warnBg(mes) {
+    this.enableBg();
+    this.bConsole(mes, 'brightYellow');
+    this.disableBg();
+  }
+
+  errorBg(mes) {
+    this.enableBg();
+    this.bConsole(mes, 'brightRed');
+    this.disableBg();
+  }
+
   oneType(mes) {
     this.clear();
     this.type(mes);
