@@ -594,6 +594,7 @@ const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
 
 const findNewFriendFromData = async (userId, sId) => {
   const folder = '../results/example';
+  const folderOutput = '../results/example-new';
   const nameFile = 'example-file';
 
   let curData = await readJSONFile({
@@ -615,7 +616,7 @@ const findNewFriendFromData = async (userId, sId) => {
 
     if (curData?.friends.length) {
       const { id, first_name, last_name } = curData;
-      const bNameFile = `${first_name}-${last_name}-${id}`;
+      const bNameFile = `${first_name}-${last_name}-${id}-${bDate()}`;
 
       curData = curData.friends.filter(({ is_closed }) => !is_closed);
       const newFriends = [];
@@ -679,12 +680,23 @@ const findNewFriendFromData = async (userId, sId) => {
         const nameFile = `newFriends-${bNameFile}`;
 
         writeToJSON({
-          path: folder,
+          path: folderOutput,
+          name: nameFile,
+          data: {
+            newFriendsLength: newFriends.length,
+            newFriends,
+          },
+        });
+      }
+
+      if (commonFriends.length) {
+        const nameFile = `commonFriends-${bNameFile}`;
+
+        writeToJSON({
+          path: folderOutput,
           name: nameFile,
           data: {
             countIsUser,
-            newFriendsLength: newFriends.length,
-            newFriends,
             commonFriends,
           },
         });
@@ -774,3 +786,24 @@ const deletedFriend = async (sUserId) => {
     }
   }
 }
+
+const findNewFriendsGroup = async () => {
+  const sId = 2;
+
+  const folder = '../results/example';
+  const folderOutput = '../results/example-new';
+
+  createFolders([
+    '../results',
+    folder,
+    folderOutput
+  ]);
+
+  await delayF();
+
+  logger.group('Паша Дуров');
+  await findNewFriendFromData(1, sId);
+  logger.endGroup();
+}
+
+findNewFriendsGroup();
