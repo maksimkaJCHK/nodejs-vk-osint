@@ -592,6 +592,110 @@ const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
   });
 }
 
+const findFriendsOnArr = async ({
+  friendsIds,
+  data,
+  sId
+}) => {
+  const newFriends = [];
+  const commonFriends = [];
+  let countUser = 0;
+  let countIsUser = 0;
+
+  for (const user of data) {
+    countUser++;
+    const { id, first_name, last_name } = user;
+    const name = `${first_name} ${last_name}`;
+
+    logger.group(`Пользователь ${name} это ${countUser} пользователь из ${data.length}.`);
+
+    if (friendsIds.includes(id)) {
+      countIsUser++;
+      commonFriends.push(user);
+
+      logger.infoBg(`Пользователь ${name} c id${id} уже есть в друзьях.`);
+    }
+
+    if (id !== sId && !friendsIds.includes(id)) {
+      try {
+        const userFriends = await getUserFriends(vk, id, name);
+        const { items } =  userFriends;
+
+        const isFriend = items.map(({ id }) => id).includes(sId);
+
+        if (isFriend) {
+          newFriends.push(user);
+          logger.successBg(`Найден новый друг ${name} c id${id}.`);
+        }
+
+        if (!isFriend) {
+          logger.info(`Пользователь ${name} c id${id} не явдяется другом.`);
+        }
+      } catch (error) {
+        errorHandling(error, name);
+        logger.error(`Не удалось собрать информацию о ${name}.`);
+
+        if (isStopParser(error)) {
+          logger.space();
+          logger.error('Дальнейший сбор информации не имеет смысла.');
+
+          break;
+        }
+      }
+
+      await delayF();
+    }
+
+    logger.endGroup();
+  }
+
+  return {
+    newFriends,
+    commonFriends,
+    countUser,
+    countIsUser
+  }
+}
+
+const friendOutput = ({
+  countUser,
+  newFriends,
+  countIsUser,
+  name,
+  folderOutput,
+  commonFriends
+}) => {
+  logger.space();
+  logger.success(`Всего обработано ${countUser} пользователей.`);
+  logger.success(`Найдено новых друзей ${newFriends.length}.`);
+  logger.success(`Пользователь имеет ${countIsUser} общих друзей.`);
+
+  if (newFriends.length) {
+    const nameFile = `newFriends-${name}`;
+
+    writeToJSON({
+      path: folderOutput,
+      name: nameFile,
+      data: {
+        newFriendsLength: newFriends.length,
+        newFriends,
+      },
+    });
+  }
+
+  if (commonFriends.length) {
+    const nameFile = `commonFriends-${name}`;
+
+    writeToJSON({
+      path: folderOutput,
+      name: nameFile,
+      data: {
+        countIsUser,
+        commonFriends,
+      },
+    });
+  }
+}
 const findNewFriendFromData = async (userId, sId) => {
   const folder = '../results/example';
   const folderOutput = '../results/example-new';
@@ -619,88 +723,26 @@ const findNewFriendFromData = async (userId, sId) => {
       const bNameFile = `${first_name}-${last_name}-${id}-${bDate()}`;
 
       curData = curData.friends.filter(({ is_closed }) => !is_closed);
-      const newFriends = [];
-      const commonFriends = [];
-      let countUser = 0;
-      let countIsUser = 0;
 
-      for (const user of curData) {
-        countUser++;
-        const { id, first_name, last_name } = user;
-        const name = `${first_name} ${last_name}`;
+      const {
+        newFriends,
+        commonFriends,
+        countUser,
+        countIsUser
+      } = await findFriendsOnArr({
+        friendsIds,
+        sId,
+        data: curData
+      });
 
-        logger.group(`Пользователь ${name} это ${countUser} пользователь из ${curData.length}.`);
-
-        if (friendsIds.includes(id)) {
-          countIsUser++;
-          commonFriends.push(user);
-
-          logger.infoBg(`Пользователь ${name} c id${id} уже есть в друзьях.`);
-        }
-
-        if (id !== sId && !friendsIds.includes(id)) {
-          try {
-            const userFriends = await getUserFriends(vk, id, name);
-            const { items } =  userFriends;
-
-            const isFriend = items.map(({ id }) => id).includes(sId);
-
-            if (isFriend) {
-              newFriends.push(user);
-              logger.successBg(`Найден новый друг ${name} c id${id}.`);
-            }
-
-            if (!isFriend) {
-              logger.info(`Пользователь ${name} c id${id} не явдяется другом.`);
-            }
-          } catch (error) {
-            errorHandling(error, name);
-            logger.error(`Не удалось собрать информацию о ${name}.`);
-
-            if (isStopParser(error)) {
-              logger.space();
-              logger.error('Дальнейший сбор информации не имеет смысла.');
-
-              break;
-            }
-          }
-
-          await delayF();
-        }
-
-        logger.endGroup();
-      }
-
-      logger.space();
-      logger.success(`Всего обработано ${countUser} пользователей.`);
-      logger.success(`Найдено новых друзей ${newFriends.length}.`);
-      logger.success(`Пользователь имеет ${countIsUser} общих друзей.`);
-
-      if (newFriends.length) {
-        const nameFile = `newFriends-${bNameFile}`;
-
-        writeToJSON({
-          path: folderOutput,
-          name: nameFile,
-          data: {
-            newFriendsLength: newFriends.length,
-            newFriends,
-          },
-        });
-      }
-
-      if (commonFriends.length) {
-        const nameFile = `commonFriends-${bNameFile}`;
-
-        writeToJSON({
-          path: folderOutput,
-          name: nameFile,
-          data: {
-            countIsUser,
-            commonFriends,
-          },
-        });
-      }
+      friendOutput({
+        countUser,
+        newFriends,
+        countIsUser,
+        name: bNameFile,
+        folderOutput,
+        commonFriends
+      });
     }
   }
 }
@@ -806,4 +848,62 @@ const findNewFriendsGroup = async () => {
   logger.endGroup();
 }
 
-findNewFriendsGroup();
+const findNewFriendsFromData = async () => {
+  const sId = 1;
+  const folder = '../results/example';
+  const folderOutput = '../results/example-new';
+  const folderClosedFriends = '../results/closed-example';
+  const name = "Паша Дуров";
+
+  createFolders([
+    '../results',
+    folder,
+    folderOutput
+  ]);
+
+  await delayF();
+
+  let curData = await readJSONFile({
+    name: 'friends-parser',
+    path: folder
+  });
+
+  let friends = await readJSONFile({
+    name: 'example-file',
+    path: folderClosedFriends
+  });
+
+  if (!curData || !friends) {
+    logger.error('Список пользователей пуст, не о ком собирать информацию.');
+  }
+
+  if (curData && friends) {
+    const friendsIds = curData.map(({ id }) => id);
+
+    if (friends?.items.length) {
+      const data = friends.items.filter(({ is_closed }) => !is_closed);
+
+      const {
+        newFriends,
+        commonFriends,
+        countUser,
+        countIsUser
+      } = await findFriendsOnArr({
+        friendsIds,
+        sId,
+        data
+      });
+
+      friendOutput({
+        countUser,
+        newFriends,
+        countIsUser,
+        name,
+        folderOutput,
+        commonFriends
+      });
+    } else {
+      logger.success('Нет друзей для поиска.');
+    }
+  }
+}
