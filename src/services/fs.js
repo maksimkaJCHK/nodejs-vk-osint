@@ -2,10 +2,14 @@ import fs from 'fs';
 import logger from '../logger/logger.js';
 
 export const makeFolder = (nameFolder) => {
-  fs.mkdir(nameFolder, err => {
-    if (err) {
+  fs.mkdir(nameFolder, (err) => {
+    if (err && err.code !== 'EEXIST') {
       logger.error(`Не удалось создать папку ${nameFolder}`);
       logger.error(`${err}`);
+    }
+
+    if (err && err.code === 'EEXIST') {
+      logger.success(`Папка "${nameFolder}" была содана ранее.`);
     }
 
     if (!err) logger.success(`Папка ${nameFolder} успешно создана`);

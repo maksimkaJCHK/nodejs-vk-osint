@@ -34,7 +34,6 @@ const vk = new VK({
   token
 });
 
-
 logger.disableDate();
 
 // Получаю друзей, подписки, подписчиков, группы
@@ -146,7 +145,7 @@ const getUsersInfoFromData = async () => {
 
 const getFriendsCountUser = async () => {
   const savePath = '../results/example';
-  const nameFile = 'example';
+  const nameFile = 'example-file';
 
   let friends = await readJSONFile({
     name: nameFile,
@@ -254,12 +253,12 @@ const compareFriend = async (name) => {
   const folder = '../results/example';
 
   let firstFriendData = await readJSONFile({
-    name: `${name}-friend-2024-11-03`,
+    name: `${name}-friend-old-date`,
     path: folder
   });
 
   let lastFriendData = await readJSONFile({
-    name: `${name}-friend-2024-12-12`,
+    name: `${name}-friend-last-date`,
     path: folder
   });
 
@@ -670,27 +669,16 @@ const friendOutput = ({
   logger.success(`Найдено новых друзей ${newFriends.length}.`);
   logger.success(`Пользователь имеет ${countIsUser} общих друзей.`);
 
-  if (newFriends.length) {
-    const nameFile = `newFriends-${name}`;
+  if (newFriends.length || commonFriends.length) {
+    const nameFile = `info-${name}`;
 
     writeToJSON({
       path: folderOutput,
       name: nameFile,
       data: {
         newFriendsLength: newFriends.length,
-        newFriends,
-      },
-    });
-  }
-
-  if (commonFriends.length) {
-    const nameFile = `commonFriends-${name}`;
-
-    writeToJSON({
-      path: folderOutput,
-      name: nameFile,
-      data: {
         countIsUser,
+        newFriends,
         commonFriends,
       },
     });
