@@ -12,7 +12,7 @@ export const makeFolder = (nameFolder) => {
       logger.success(`Папка "${nameFolder}" была содана ранее.`);
     }
 
-    if (!err) logger.success(`Папка ${nameFolder} успешно создана`);
+    if (!err) logger.success(`Папка ${nameFolder} успешно создана.`);
   });
 };
 
