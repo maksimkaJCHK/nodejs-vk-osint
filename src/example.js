@@ -684,6 +684,7 @@ const friendOutput = ({
     });
   }
 }
+
 const findNewFriendFromData = async (userId, sId) => {
   const folder = '../results/example';
   const folderOutput = '../results/example-new';
@@ -893,5 +894,108 @@ const findNewFriendsFromData = async () => {
     } else {
       logger.success('Нет друзей для поиска.');
     }
+  }
+}
+
+const buildFriendFromData = async () => {
+  const folderNew = '../results/example-new';
+  const folderOld= '../results/example_old';
+  const folderOutput = '../results/example-full';
+
+  const nameNew = 'example-new';
+  const nameOld= 'example-old';
+
+  createFolders([
+    '../results',
+    folderNew,
+    folderOld,
+    folderOutput
+  ]);
+
+  await delayF();
+
+  let curData = await readJSONFile({
+    name: nameNew,
+    path: folderNew
+  });
+
+  let oldData = await readJSONFile({
+    name: nameOld,
+    path: folderOld
+  });
+
+  if (!curData && !oldData) {
+    logger.error('Нет данных для сравнения.');
+  }
+
+  const fFriend = (oldData, idItem) => {
+    const item = oldData.find(({ id }) => id === idItem);
+
+    if (!item) {
+      return {
+        friendsOld: [],
+        idOldUser: null,
+        first_name: '',
+        last_name: ''
+      }
+    }
+
+    if (item) {
+      const {
+        friends,
+        id,
+        first_name,
+        last_name
+      } = item;
+
+      return {
+        friendsOld: friends,
+        idOldUser: id,
+        first_name,
+        last_name
+      }
+    }
+  }
+
+  if (curData && oldData) {
+    let noFriendsCount = 0;
+    let isFriendsCount = 0;
+
+    for (let item of curData) {
+      let { id, friends } = item;
+
+      if (!friends.length) {
+        const {
+          friendsOld,
+          idOldUser,
+          first_name,
+          last_name
+        } = fFriend(oldData, id);
+
+        if (!friendsOld.length) {
+          noFriendsCount++;
+          logger.info(`Пользователь ${first_name} ${last_name} с id${idOldUser} не имеет друзей.`);
+        }
+
+        if (friendsOld.length) {
+          isFriendsCount++;
+          item.friendsCount = friendsOld.length;
+          item.friends = friendsOld;
+
+          logger.successBg(`Пользователю ${first_name} ${last_name} с id${idOldUser} добавлены друзья.`);
+        }
+      }
+    }
+
+    logger.space();
+    logger.success(`Добавлено друзей у ${isFriendsCount} пользователей.`);
+    logger.success(`Нет друзей у ${noFriendsCount} пользователей.`);
+
+    writeToJSON({
+      path: folderOutput,
+      name: 'friend-full',
+      data: curData,
+      spices: 0
+    });
   }
 }
