@@ -898,12 +898,12 @@ const findNewFriendsFromData = async () => {
 }
 
 const buildFriendFromData = async () => {
-  const folderNew = '../results/example-new';
-  const folderOld= '../results/example_old';
+  const folderNew = '../results/example-full';
+  const folderOld= '../results/example-old';
   const folderOutput = '../results/example-full';
 
-  const nameNew = 'example-new';
-  const nameOld= 'example-old';
+  const nameNew = 'exampleNew';
+  const nameOld= 'exampleOld';
 
   createFolders([
     '../results',
@@ -928,17 +928,29 @@ const buildFriendFromData = async () => {
     logger.error('Нет данных для сравнения.');
   }
 
+  const defaultParams = {
+    friendsOld: [],
+    idOldUser: null,
+    first_name: '',
+    last_name: ''
+  }
+
+  const bFriendObj = ({
+    friendsOld,
+    idOldUser,
+    first_name,
+    last_name
+  } = defaultParams) => ({
+    friendsOld,
+    idOldUser,
+    first_name,
+    last_name
+  });
+
   const fFriend = (oldData, idItem) => {
     const item = oldData.find(({ id }) => id === idItem);
 
-    if (!item) {
-      return {
-        friendsOld: [],
-        idOldUser: null,
-        first_name: '',
-        last_name: ''
-      }
-    }
+    if (!item) return bFriendObj();
 
     if (item) {
       const {
@@ -948,12 +960,12 @@ const buildFriendFromData = async () => {
         last_name
       } = item;
 
-      return {
+      return bFriendObj({
         friendsOld: friends,
         idOldUser: id,
         first_name,
         last_name
-      }
+      })
     }
   }
 
