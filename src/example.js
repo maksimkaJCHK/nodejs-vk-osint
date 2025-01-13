@@ -898,12 +898,12 @@ const findNewFriendsFromData = async () => {
 }
 
 const buildFriendFromData = async () => {
-  const folderNew = '../results/example-full';
-  const folderOld= '../results/example-old';
+  const folderNew = '../results/example-new';
+  const folderOld = '../results/example-old';
   const folderOutput = '../results/example-full';
 
-  const nameNew = 'exampleNew';
-  const nameOld= 'exampleOld';
+  const nameNew = 'example-new';
+  const nameOld= 'example_old';
 
   createFolders([
     '../results',
