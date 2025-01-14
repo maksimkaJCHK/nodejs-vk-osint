@@ -606,7 +606,7 @@ const findFriendsOnArr = async ({
     const { id, first_name, last_name } = user;
     const name = `${first_name} ${last_name}`;
 
-    logger.group(`Пользователь ${name} это ${countUser} пользователь из ${data.length}.`);
+    logger.group(`Пользователь ${name} это ${countUser} пользователь из ${data.length}. Новых друзей ${newFriends.length}, общих друзей ${countIsUser}.`);
 
     if (friendsIds.includes(id)) {
       countIsUser++;
@@ -686,9 +686,9 @@ const friendOutput = ({
 }
 
 const findNewFriendFromData = async (userId, sId) => {
-  const folder = '../results/example';
+  const folder = '../results/friend-full';
   const folderOutput = '../results/example-new';
-  const nameFile = 'example-file';
+  const nameFile = 'friend-full';
 
   let curData = await readJSONFile({
     name: nameFile,
