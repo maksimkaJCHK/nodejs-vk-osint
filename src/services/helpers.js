@@ -47,7 +47,7 @@ export const compareArrObj = (fArr, sArr) => {
   }
 }
 
-export const compareArr= (arr1, arr2) => {
+export const compareArr = (arr1, arr2) => {
   const commоn = [];
   const fUniqVal = [];
 
@@ -96,7 +96,7 @@ export const parseGroups = (firstData, lastData) => {
   const fGroupData = firstData?.groups?.items || [];
   const lGroupData = lastData?.groups?.items || [];
 
-  const infoAboutGroups = compareArr(fGroupData, lGroupData);
+  const infoAboutGroups = compareArrObj(fGroupData, lGroupData);
 
   const {
     fUniqVal: removedGroups,

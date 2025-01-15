@@ -250,7 +250,7 @@ const getFriendsCountUser = async () => {
 }
 
 const compareFriend = async (name) => {
-  const folder = '../results/example';
+  const folder = '../results/user_friends';
 
   let firstFriendData = await readJSONFile({
     name: `${name}-friend-old-date`,
