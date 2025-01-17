@@ -1,7 +1,6 @@
 # Logs
 results
-src/data/
-src/services/token.js
+src/ssr-compiled/
 package-lock.json
 logs
 *.log
