@@ -1,32 +1,32 @@
 import { VK } from 'vk-io';
 
-import logger from './logger/logger.js';
-import errorHandling, { isStopParser } from './services/errorHandling.js';
+import logger from './back/logger/logger.js';
+import errorHandling, { isStopParser } from './back/services/errorHandling.js';
 
-import getToken from './services/token.js';
-import { friends } from './data/data.js';
+import getToken from './back/services/token.js';
+import { friends } from './back/data/data.js';
 
 import {
   getUserFriends,
   getUsersInfo,
-} from './API/index.js';
+} from './back/API/index.js';
 
 import {
   readJSONFile,
   writeToJSON,
   createFolders,
-} from './services/fs.js';
+} from './back/services/fs.js';
 
-import { getUserFreAndInf } from './hof/services.js';
+import { getUserFreAndInf } from './back/hof/services.js';
 
-import delayF from './services/delay.js';
+import delayF from './back/services/delay.js';
 
 import {
   bDate,
   parseFriends,
   parseGroups,
   parseSubscriptions
-} from './services/helpers.js';
+} from './back/services/helpers.js';
 
 const token = getToken();
 
