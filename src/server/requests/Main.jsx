@@ -5,6 +5,12 @@ import UsersList from '../../front/components/UsersList.jsx';
 
 import { readJSONFile } from '../../back/services/fs.js';
 
+import fs from 'fs';
+
+let typeLayout = fs.readFileSync('./src/server/main.html', {
+  encoding: 'utf8',
+});
+
 const Main = async (req, res, next) => {
   const users = await readJSONFile({
     name: 'example',
@@ -13,10 +19,12 @@ const Main = async (req, res, next) => {
 
   const content = ReactDOMServer.renderToString(<UsersList users={ users } />);
 
+  typeLayout = typeLayout.replace('<div id="app"></div>', `<div id="app">${content}</div>`)
+
   res.contentType('text/html');
   res.status(200);
 
-  res.send(content);
+  res.send(typeLayout);
 
   next();
 }

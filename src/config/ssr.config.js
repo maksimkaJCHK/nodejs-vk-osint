@@ -1,4 +1,3 @@
-
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 import replace from '@rollup/plugin-replace';
@@ -11,7 +10,12 @@ import commonjs from '@rollup/plugin-commonjs';
 import swc from '@rollup/plugin-swc';
 import image from '@rollup/plugin-image';
 
+import path from 'path';
+import appRoot from 'app-root-path';
+
 const postCSSParams = {
+  extract: 'tmp/css/main.css',
+  minimize: true,
   use: {
     sass: {
       silenceDeprecations: ["legacy-js-api"]
@@ -27,32 +31,26 @@ const postCSSParams = {
   ],
 }
 
-export default {
-  input: ['./src/server/requests/Main.jsx'],
-  output: {
-    file: './src/ssr-compiled/requests/main.js',
-    name: 'main',
-    format: 'es',
-    chunkFileNames() {
-      return 'common.js'
-    }
-  },
-  external: [
-    'react',
-    'react-dom/server',
-    '../../back//services/fs.js'
-  ],
-  plugins: [
+export const bPlugins = (type = 'development') => {
+  return [
     replace({
       preventAssignment: true,
       'process.browser': true,
-      'process.env.NODE_ENV': JSON.stringify('development')
+      'process.env.NODE_ENV': JSON.stringify(type)
     }),
     resolve({
       extensions: ['.js', '.jsx'],
       browser: true,
     }),
     image(),
+    alias({
+      entries: [
+        {
+          find: '@',
+          replacement: path.resolve(appRoot.path, 'src'),
+        },
+      ]
+    }),
     postcss(postCSSParams),
     commonjs(),
     swc({
@@ -102,4 +100,4 @@ export default {
       }
     }),
   ]
-};
+}

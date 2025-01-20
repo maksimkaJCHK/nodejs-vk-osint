@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/index.js",
-    "compile:ssr": "rollup -c ./src/rollup.config.ssr.js"
+    "start:dev": "nodemon ./src/index.js",
+    "compile:ssr:dev": "rollup -c ./src/rollup.config.ssr.dev.js -w",
+    "compile:ssr:prod": "rollup -c ./src/rollup.config.ssr.prod.js"
   },
   "repository": {
     "type": "git",

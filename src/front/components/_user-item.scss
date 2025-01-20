@@ -1,0 +1,27 @@
+.user-item {
+  &-img {
+    display: block;
+    text-decoration: none;
+    overflow: hidden;
+    border-radius: 10px;
+
+    img {
+      width: 100%;
+      display: block;
+    }
+  }
+
+  &-name {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 5px 0;
+
+    a {
+      color: var(--text-color);
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

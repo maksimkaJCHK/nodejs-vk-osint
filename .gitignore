@@ -1,6 +1,9 @@
 # Logs
+visualizations.html
 results
 src/ssr-compiled/
+src/server/public/css
+tmp
 package-lock.json
 logs
 *.log

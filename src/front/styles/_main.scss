@@ -1,0 +1,11 @@
+@forward './normalize.scss';
+
+:root {
+  --text-color: #000;
+}
+
+#wrapper {
+  margin: 0 auto;
+  max-width: 1600px;
+  padding: 15px 20px;
+}

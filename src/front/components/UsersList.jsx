@@ -1,6 +1,8 @@
 import React from 'react';
 import UserItem from './UserItem.jsx';
 
+import './_user-list.scss';
+
 const UsersList = ({ users }) => {
   if (!users.length ){
     return (
