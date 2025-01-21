@@ -10,9 +10,6 @@ const UserItem = ({ user }) => {
     first_name,
     last_name,
     photo_max,
-    university_name,
-    graduation,
-    bdate,
   } = user;
 
   const fullName = useMemo(() => bFullName(first_name, last_name),
@@ -40,10 +37,16 @@ const UserItem = ({ user }) => {
           { fullName }
         </a>
       </div>
+
       { user?.city?.title && <div> { user.city.title }</div> }
-      { bdate && <div> { bdate }</div> }
-      { university_name && <div> { university_name } </div> }
-      { graduation && graduation !== 0 && <div> { graduation } </div> }
+      { user.bdate && <div> { user.bdate }</div> }
+
+      <div className="user-item-head">
+        Образование
+      </div>
+
+      { user.university_name && <div> { user.university_name } </div> }
+      { user.graduation && user.graduation !== 0 ? <div> { user.graduation } </div> : null }
       { user.education_form && <div> { user.education_form }</div> }
       { user.education_status && <div> { user.education_status } </div> }
     </div>

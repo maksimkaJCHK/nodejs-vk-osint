@@ -1,6 +1,6 @@
 .users-list {
   display: grid;
-  gap: 20px;
+  gap: 30px;
   justify-content: center;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
 }

@@ -19,7 +19,8 @@ const Main = async (req, res, next) => {
 
   const content = ReactDOMServer.renderToString(<UsersList users={ users } />);
 
-  typeLayout = typeLayout.replace('<div id="app"></div>', `<div id="app">${content}</div>`)
+  typeLayout = typeLayout.replace('<div id="app"></div>', `<div id="app">${content}</div>`);
+  typeLayout = typeLayout.replace('<!--SSR script-->', `<script>window.users = ${JSON.stringify(users)}</script>`);
 
   res.contentType('text/html');
   res.status(200);
