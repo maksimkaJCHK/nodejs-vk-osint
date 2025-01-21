@@ -7,8 +7,8 @@
   "scripts": {
     "start": "node ./src/index.js",
     "start:dev": "nodemon ./src/index.js",
-    "compile:ssr:dev": "rollup -c ./src/rollup.config.ssr.dev.js -w",
-    "compile:ssr:prod": "rollup -c ./src/rollup.config.ssr.prod.js"
+    "compile:ssr:dev": "rollup -c ./src/config/rollup.config.ssr.dev.js -w",
+    "compile:ssr:prod": "rollup -c ./src/config/rollup.config.ssr.prod.js"
   },
   "repository": {
     "type": "git",

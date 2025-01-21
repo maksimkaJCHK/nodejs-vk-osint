@@ -1,5 +1,5 @@
-import { bPlugins } from './config/ssr.config.js';
-import external from './config/external.js';
+import { bPlugins } from './ssr.config.js';
+import external from './ssr.external.js';
 
 import terser from '@rollup/plugin-terser';
 import sizes from "rollup-plugin-sizes";

@@ -1,5 +1,5 @@
-import { bPlugins } from './config/ssr.config.js';
-import external from './config/external.js';
+import { bPlugins } from './ssr.config.js';
+import external from './ssr.external.js';
 
 export default {
   input: ['./src/server/requests/Main.jsx'],
