@@ -1,5 +1,8 @@
 import React, { useMemo } from 'react';
-import { bFullName } from '@/front/helpers.js';
+import UserItemRow from './UserItemRow.jsx';
+import UserItemEducation from './UserItemEducation.jsx';
+
+import { bFullName, bOccupation } from '@/front/helpers.js';
 
 import './_user-item.scss';
 import '../styles/_main.scss';
@@ -25,7 +28,7 @@ const UserItem = ({ user }) => {
       <a
         href = { photo_max }
         target = "_blank"
-        className="user-item-img"
+        className = "user-item-img"
       >
         <img src = { photo_max } alt = { fullName } />
       </a>
@@ -38,17 +41,15 @@ const UserItem = ({ user }) => {
         </a>
       </div>
 
-      { user?.city?.title && <div> { user.city.title }</div> }
-      { user.bdate && <div> { user.bdate }</div> }
+      { user?.city?.title && <UserItemRow>Город: { user.city.title }</UserItemRow> }
+      { user.bdate && <UserItemRow>День рождения: { user.bdate }</UserItemRow> }
 
-      <div className="user-item-head">
-        Образование
-      </div>
+      { user?.occupation?.name && <UserItemRow>
+        { bOccupation(user?.occupation?.type) }
+        { user.occupation.name } { user.occupation?.graduate_year ? ` (${user.occupation.graduate_year})` : null }
+      </UserItemRow> }
 
-      { user.university_name && <div> { user.university_name } </div> }
-      { user.graduation && user.graduation !== 0 ? <div> { user.graduation } </div> : null }
-      { user.education_form && <div> { user.education_form }</div> }
-      { user.education_status && <div> { user.education_status } </div> }
+      { user.university_name && <UserItemEducation user = { user } /> }
     </div>
   )
 }
