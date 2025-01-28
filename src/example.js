@@ -594,19 +594,35 @@ const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
 const findFriendsOnArr = async ({
   friendsIds,
   data,
+  closedFriends,
   sId
 }) => {
   const newFriends = [];
   const commonFriends = [];
+  const closedCommonFriends = [];
   let countUser = 0;
   let countIsUser = 0;
+  let countClosedCommonFriends = 0;
+
+  if (closedFriends) {
+    for (const user of closedFriends) {
+      if (friendsIds.includes(user.id)) {
+        countClosedCommonFriends++;
+        closedCommonFriends.push(user);
+
+        const { id, first_name, last_name } = user;
+        const name = `${first_name} ${last_name}`;
+        logger.info(`Найден общий закрытый друг ${name} c id${id}.`);
+      }
+    }
+  }
 
   for (const user of data) {
     countUser++;
     const { id, first_name, last_name } = user;
     const name = `${first_name} ${last_name}`;
 
-    logger.group(`Пользователь ${name} это ${countUser} пользователь из ${data.length}. Новых друзей ${newFriends.length}, общих друзей ${countIsUser}.`);
+    logger.group(`Пользователь ${name} это ${countUser} пользователь из ${data.length}. Новых друзей ${newFriends.length}, общих друзей ${countIsUser + countClosedCommonFriends}.`);
 
     if (friendsIds.includes(id)) {
       countIsUser++;
@@ -652,7 +668,9 @@ const findFriendsOnArr = async ({
     newFriends,
     commonFriends,
     countUser,
-    countIsUser
+    countIsUser,
+    countClosedCommonFriends,
+    closedCommonFriends
   }
 }
 
@@ -662,12 +680,14 @@ const friendOutput = ({
   countIsUser,
   name,
   folderOutput,
-  commonFriends
+  commonFriends,
+  countClosedCommonFriends,
+  closedCommonFriends,
 }) => {
   logger.space();
   logger.success(`Всего обработано ${countUser} пользователей.`);
   logger.success(`Найдено новых друзей ${newFriends.length}.`);
-  logger.success(`Пользователь имеет ${countIsUser} общих друзей.`);
+  logger.success(`Пользователь имеет ${countIsUser + countClosedCommonFriends} общих друзей(${countIsUser} открытых общих друзей, ${countClosedCommonFriends} закрытых общих друзей).`);
 
   if (newFriends.length || commonFriends.length) {
     const nameFile = `info-${name}`;
@@ -677,9 +697,12 @@ const friendOutput = ({
       name: nameFile,
       data: {
         newFriendsLength: newFriends.length,
+        countCommon: countIsUser + countClosedCommonFriends,
         countIsUser,
+        countClosedCommonFriends,
         newFriends,
         commonFriends,
+        closedCommonFriends
       },
     });
   }
@@ -687,7 +710,7 @@ const friendOutput = ({
 
 const findNewFriendFromData = async (userId, sId) => {
   const folder = '../results/friend-full';
-  const folderOutput = '../results/example-new';
+  const folderOutput = '../results/example-output';
   const nameFile = 'friend-full';
 
   let curData = await readJSONFile({
@@ -711,16 +734,20 @@ const findNewFriendFromData = async (userId, sId) => {
       const { id, first_name, last_name } = curData;
       const bNameFile = `${first_name}-${last_name}-${id}-${bDate()}`;
 
+      const closedFriends = curData.friends.filter(({ is_closed }) => is_closed);
       curData = curData.friends.filter(({ is_closed }) => !is_closed);
 
       const {
         newFriends,
         commonFriends,
         countUser,
-        countIsUser
+        countIsUser,
+        countClosedCommonFriends,
+        closedCommonFriends
       } = await findFriendsOnArr({
         friendsIds,
         sId,
+        closedFriends,
         data: curData
       });
 
@@ -728,6 +755,8 @@ const findNewFriendFromData = async (userId, sId) => {
         countUser,
         newFriends,
         countIsUser,
+        countClosedCommonFriends,
+        closedCommonFriends,
         name: bNameFile,
         folderOutput,
         commonFriends
@@ -903,7 +932,7 @@ const buildFriendFromData = async () => {
   const folderOutput = '../results/example-full';
 
   const nameNew = 'example-new';
-  const nameOld= 'example_old';
+  const nameOld= 'example-old';
 
   createFolders([
     '../results',
