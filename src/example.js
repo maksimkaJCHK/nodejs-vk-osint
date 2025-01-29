@@ -25,6 +25,7 @@ import {
   bDate,
   parseFriends,
   parseGroups,
+  compareArrObj,
   parseSubscriptions
 } from './back/services/helpers.js';
 
@@ -687,7 +688,7 @@ const friendOutput = ({
   logger.space();
   logger.success(`Всего обработано ${countUser} пользователей.`);
   logger.success(`Найдено новых друзей ${newFriends.length}.`);
-  logger.success(`Пользователь имеет ${countIsUser + countClosedCommonFriends} общих друзей(${countIsUser} открытых общих друзей, ${countClosedCommonFriends} закрытых общих друзей).`);
+  logger.success(`Пользователь имеет ${countIsUser + countClosedCommonFriends} общих друзей (${countIsUser} открытых общих друзей, ${countClosedCommonFriends} закрытых общих друзей).`);
 
   if (newFriends.length || commonFriends.length) {
     const nameFile = `info-${name}`;
@@ -929,7 +930,7 @@ const findNewFriendsFromData = async () => {
 const buildFriendFromData = async () => {
   const folderNew = '../results/example-new';
   const folderOld = '../results/example-old';
-  const folderOutput = '../results/example-full';
+  const folderOutput = '../results/example-output';
 
   const nameNew = 'example-new';
   const nameOld= 'example-old';
