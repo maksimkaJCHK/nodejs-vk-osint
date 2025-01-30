@@ -17,7 +17,7 @@ const Main = async (req, res, next) => {
     path: './results/example'
   });
 
-  const content = ReactDOMServer.renderToString(<UsersList users = { users || [] } />);
+  const content = ReactDOMServer.renderToString(<UsersList users = { users.userFriends.items || [] } />);
 
   typeLayout = typeLayout.replace('<div id="app"></div>', `<div id="app">${content}</div>`);
   typeLayout = typeLayout.replace('<!--SSR script-->', `<script>window.users = ${JSON.stringify(users)}</script>`);

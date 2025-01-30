@@ -25,7 +25,6 @@ import {
   bDate,
   parseFriends,
   parseGroups,
-  compareArrObj,
   parseSubscriptions
 } from './back/services/helpers.js';
 
@@ -233,12 +232,6 @@ const getFriendsCountUser = async () => {
         name: nameFile,
         spices: 0
       }
-
-      // Пока оставлю, но скорее всего мне это не понадобится
-      // writeToJSON({
-      //   data: newFriends,
-      //   ...paramsSaveFile
-      // });
 
       writeToJSON({
         data: friends.reverse(),

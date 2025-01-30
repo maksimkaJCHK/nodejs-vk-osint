@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import UserItemRow from './UserItemRow.jsx';
+import UserItemInfo from './UserItemInfo.jsx';
 import UserItemEducation from './UserItemEducation.jsx';
 
 import { bFullName, bOccupation } from '@/front/helpers.js';
@@ -12,7 +13,7 @@ const UserItem = ({ user }) => {
     id,
     first_name,
     last_name,
-    photo_max,
+    photo_200_orig,
   } = user;
 
   const fullName = useMemo(() => bFullName(first_name, last_name),
@@ -26,11 +27,11 @@ const UserItem = ({ user }) => {
   return (
     <div className = "user-item">
       <a
-        href = { photo_max }
+        href = { photo_200_orig }
         target = "_blank"
         className = "user-item-img"
       >
-        <img src = { photo_max } alt = { fullName } />
+        <img src = { photo_200_orig } alt = { fullName } />
       </a>
       <div className="user-item-name">
         <a 
@@ -41,8 +42,7 @@ const UserItem = ({ user }) => {
         </a>
       </div>
 
-      { user?.city?.title && <UserItemRow>Город: { user.city.title }</UserItemRow> }
-      { user.bdate && <UserItemRow>День рождения: { user.bdate }</UserItemRow> }
+      <UserItemInfo user = { user } />
 
       { user?.occupation?.name && <UserItemRow>
         { bOccupation(user?.occupation?.type) }
