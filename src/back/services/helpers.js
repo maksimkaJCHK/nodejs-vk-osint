@@ -92,6 +92,25 @@ export const parseFriends = (firstData, lastData) => {
   }
 }
 
+export const parseFolowers = (firstData, lastData) => {
+  const fFriendData = firstData?.folowers?.items || [];
+  const lFriendData = lastData?.folowers?.items || [];
+
+  const infoAboutFriends = compareArrObj(fFriendData, lFriendData);
+
+  const {
+    fUniqVal: removedFolowers,
+    lUniqVal: addFolowers
+  } = infoAboutFriends;
+
+  return {
+    countRemovedFolowers: removedFolowers.length,
+    countAddFolowers: addFolowers.length,
+    removedFolowers,
+    addFolowers,
+  }
+}
+
 export const parseGroups = (firstData, lastData) => {
   const fGroupData = firstData?.groups?.items || [];
   const lGroupData = lastData?.groups?.items || [];
