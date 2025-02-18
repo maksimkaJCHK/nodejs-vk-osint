@@ -396,5 +396,3 @@ const buildFriendFromData = async () => {
     });
   }
 }
-
-buildFriendFromData()
