@@ -1,6 +1,6 @@
 import { VK } from 'vk-io';
 
-import logger from './back/logger/logger.js';
+import logger from 'scrapy-logger';
 import errorHandling, { isStopParser } from './back/services/errorHandling.js';
 
 import getToken from './back/services/token.js';
