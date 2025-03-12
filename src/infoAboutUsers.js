@@ -396,3 +396,15 @@ const buildFriendFromData = async () => {
     });
   }
 }
+
+const infoForFriends = async () => {
+  const constNameArr = [
+    'павел_Дуров'
+  ];
+
+  for (const name of constNameArr) {
+    await comparePersonsChanges(name);
+
+    logger.type(`Сравниили пользователя - ${name}`);
+  };
+}
