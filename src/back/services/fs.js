@@ -1,5 +1,5 @@
 import fs from 'fs';
-import logger from '../logger/logger.js';
+import logger from 'scrapy-logger';
 
 export const makeFolder = (nameFolder) => {
   fs.mkdir(nameFolder, (err) => {

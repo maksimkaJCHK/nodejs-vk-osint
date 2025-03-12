@@ -1,4 +1,4 @@
-import logger from '../logger/logger.js';
+import logger from 'scrapy-logger';
 
 export const isStopParser = ({ code }) => {
   const isError = [5, 28, 29];

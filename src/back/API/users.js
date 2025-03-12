@@ -1,4 +1,4 @@
-import logger from '../logger/logger.js';
+import logger from 'scrapy-logger';
 import delayF from '../services/delay.js';
 
 // user_ids - id-ки пользователей через запятую, или их псевдонимы
