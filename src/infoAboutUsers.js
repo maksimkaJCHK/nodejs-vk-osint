@@ -397,12 +397,8 @@ const buildFriendFromData = async () => {
   }
 }
 
-const infoForFriends = async () => {
-  const constNameArr = [
-    'павел_Дуров'
-  ];
-
-  for (const name of constNameArr) {
+const infoForFriends = async (arrNames) => {
+  for (const name of arrNames) {
     await comparePersonsChanges(name);
 
     logger.type(`Сравниили пользователя - ${name}`);

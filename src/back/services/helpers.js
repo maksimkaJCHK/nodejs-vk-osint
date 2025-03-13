@@ -10,11 +10,9 @@ export const bDate = () => {
   return `${year}-${month}-${day}`;
 }
 
-const bMapFromArr = (arr) => {
+const bMapFromArr = (arr, key = 'id') => {
   const bMap = new Map();
-
-  // Что-то должно быть ключом, в большинстве случаев это будет id-ик
-  arr.forEach((el) => bMap.set(el.id, el));
+  arr.forEach((el) => bMap.set(el[key], el));
 
   return bMap;
 }

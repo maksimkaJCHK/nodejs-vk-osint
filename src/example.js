@@ -37,69 +37,69 @@ const vk = new VK({
 logger.disableDate();
 
 // Получаю друзей, подписки, подписчиков, группы
-const getTypeInfAboutUsers = async () => {
-  if (friends && !friends.length) {
-    logger.error('Список пользователей пуст, не о ком собирать информацию.');
-  }
+// const getTypeInfAboutUsers = async () => {
+//   if (friends && !friends.length) {
+//     logger.error('Список пользователей пуст, не о ком собирать информацию.');
+//   }
 
-  if (friends && friends.length) {
-    const savePath = '../results/user_friends';
-    const allUsers = friends.length;
-    let errorCount = 0;
-    let infoErrorUsers = [];
-    let isInfoParser = true;
+//   if (friends && friends.length) {
+//     const savePath = '../results/user_friends';
+//     const allUsers = friends.length;
+//     let errorCount = 0;
+//     let infoErrorUsers = [];
+//     let isInfoParser = true;
 
-    createFolders([
-      '../results',
-      savePath
-    ]);
+//     createFolders([
+//       '../results',
+//       savePath
+//     ]);
   
-    for (const item of friends) {
-      const { id, name } = item;
+//     for (const item of friends) {
+//       const { id, name } = item;
 
-      logger.group(`Собираю информацию о пользователе - ${name}`);
+//       logger.group(`Собираю информацию о пользователе - ${name}`);
 
-      try {
-        const data = await getUserFreAndInf({ vk, id, name });
+//       try {
+//         const data = await getUserFreAndInf({ vk, id, name });
 
-        writeToJSON({
-          path: savePath,
-          name: `${name.replace(/ /, '_')}-friend-${bDate()}`,
-          data,
-        });
-      } catch (error) {
-        errorHandling(error, name);
-        logger.error(`Не удалось собрать информацию о ${name}`);
-        errorCount++;
-        infoErrorUsers.push(`-Пользователь "${name}" c id${id};\n`);
+//         writeToJSON({
+//           path: savePath,
+//           name: `${name.replace(/ /, '_')}-friend-${bDate()}`,
+//           data,
+//         });
+//       } catch (error) {
+//         errorHandling(error, name);
+//         logger.error(`Не удалось собрать информацию о ${name}`);
+//         errorCount++;
+//         infoErrorUsers.push(`-Пользователь "${name}" c id${id};\n`);
 
-        if (isStopParser(error)) {
-          logger.space();
-          logger.error('Дальнейший сбор информации не имеет смысла.');
-          isInfoParser = false;
+//         if (isStopParser(error)) {
+//           logger.space();
+//           logger.error('Дальнейший сбор информации не имеет смысла.');
+//           isInfoParser = false;
 
-          break;
-        }
-      }
+//           break;
+//         }
+//       }
 
-      logger.endGroup();
-    }
+//       logger.endGroup();
+//     }
 
-    if (isInfoParser) {
-      logger.space();
-      logger.type(`Всего обработано ${allUsers} пользователей`);
+//     if (isInfoParser) {
+//       logger.space();
+//       logger.type(`Всего обработано ${allUsers} пользователей`);
 
-      if (errorCount) {
-        logger.disableTimePeriod();
-        logger.type(`Не удалось собрать информацию о ${errorCount} пользователях:`);
-        logger.group()
-        logger.type(infoErrorUsers.join(' '));
-        logger.endGroup();
-        logger.enableTimePeriod();
-      }
-    }
-  }
-}
+//       if (errorCount) {
+//         logger.disableTimePeriod();
+//         logger.type(`Не удалось собрать информацию о ${errorCount} пользователях:`);
+//         logger.group()
+//         logger.type(infoErrorUsers.join(' '));
+//         logger.endGroup();
+//         logger.enableTimePeriod();
+//       }
+//     }
+//   }
+// }
 
 // Получаю информацию о пользователе/пользователях
 const getUsersInfoFromData = async () => {
@@ -143,186 +143,186 @@ const getUsersInfoFromData = async () => {
   }
 }
 
-const getFriendsCountUser = async () => {
-  const savePath = '../results/example';
-  const nameFile = 'example-file';
+// const getFriendsCountUser = async () => {
+//   const savePath = '../results/example';
+//   const nameFile = 'example-file';
 
-  let friends = await readJSONFile({
-    name: nameFile,
-    path: savePath
-  });
+//   let friends = await readJSONFile({
+//     name: nameFile,
+//     path: savePath
+//   });
 
-  if (friends && friends.length) {
-    let isFriendParser = true;
+//   if (friends && friends.length) {
+//     let isFriendParser = true;
 
-    createFolders([
-      '../results',
-      savePath
-    ]);
+//     createFolders([
+//       '../results',
+//       savePath
+//     ]);
 
-    await delayF();
+//     await delayF();
 
-    let currProfiles = 0;
-    let openProfiles = 0;
-    let closeProfiles = 0;
+//     let currProfiles = 0;
+//     let openProfiles = 0;
+//     let closeProfiles = 0;
 
-    for (const curFriend of friends) {
-      const { id, first_name, last_name } = curFriend;
+//     for (const curFriend of friends) {
+//       const { id, first_name, last_name } = curFriend;
 
-      const name = `${first_name} ${last_name}`;
-      currProfiles++;
+//       const name = `${first_name} ${last_name}`;
+//       currProfiles++;
 
-      logger.group(`Сбор информации о пользователе ${name}, это ${currProfiles} пользователь из ${friends.length}.`)
+//       logger.group(`Сбор информации о пользователе ${name}, это ${currProfiles} пользователь из ${friends.length}.`)
 
-      try {
-        const userFriends = await getUserFriends(vk, id, name);
-        const { items, count } = userFriends;
+//       try {
+//         const userFriends = await getUserFriends(vk, id, name);
+//         const { items, count } = userFriends;
 
-        curFriend.friendsCount = count;
-        curFriend.friends = items;
+//         curFriend.friendsCount = count;
+//         curFriend.friends = items;
 
-        openProfiles++;
-      } catch (error) {
-        errorHandling(error, name)
-        logger.error(`Не удалось собрать информацию о пользователе ${name}, код ошибки ${error.code}.`);
+//         openProfiles++;
+//       } catch (error) {
+//         errorHandling(error, name)
+//         logger.error(`Не удалось собрать информацию о пользователе ${name}, код ошибки ${error.code}.`);
 
-        if (isStopParser(error)) {
-          isFriendParser = false;
-          logger.space();
-          logger.error('Дальнейший сбор информации не имеет смысла.');
+//         if (isStopParser(error)) {
+//           isFriendParser = false;
+//           logger.space();
+//           logger.error('Дальнейший сбор информации не имеет смысла.');
 
-          break;
-        }
+//           break;
+//         }
 
-        curFriend.friendsCount = 0;
-        curFriend.friends = [];
+//         curFriend.friendsCount = 0;
+//         curFriend.friends = [];
 
-        closeProfiles++;
-      }
+//         closeProfiles++;
+//       }
 
-      logger.endGroup();
-      await delayF();
-    }
+//       logger.endGroup();
+//       await delayF();
+//     }
 
-    if (isFriendParser) {
-      // Я сортирую друзей по нормальному, а мне для моей задачи нужно от большего к меньшему, пока оставлю, а так тут заменить, и ничего переворачивать не нужно
-      friends = friends.sort((a, b) => {
-        if (a.friendsCount > b.friendsCount) {
-          return 1;
-        }
+//     if (isFriendParser) {
+//       // Я сортирую друзей по нормальному, а мне для моей задачи нужно от большего к меньшему, пока оставлю, а так тут заменить, и ничего переворачивать не нужно
+//       friends = friends.sort((a, b) => {
+//         if (a.friendsCount > b.friendsCount) {
+//           return 1;
+//         }
 
-        if (a.friendsCount < b.friendsCount) {
-          return -1;
-        }
+//         if (a.friendsCount < b.friendsCount) {
+//           return -1;
+//         }
 
-        return 0;
-      });
+//         return 0;
+//       });
 
-      logger.space();
-      logger.space();
+//       logger.space();
+//       logger.space();
 
-      logger.success(`Всего обработано ${currProfiles} профилей`);
-      logger.success(`Открытых ${openProfiles} профилей`);
-      logger.success(`Закрытых ${closeProfiles} профилей`);
+//       logger.success(`Всего обработано ${currProfiles} профилей`);
+//       logger.success(`Открытых ${openProfiles} профилей`);
+//       logger.success(`Закрытых ${closeProfiles} профилей`);
 
-      const nameFile = `friend-API-full-sort-${bDate()}`;
+//       const nameFile = `friend-API-full-sort-${bDate()}`;
 
-      const paramsSaveFile = {
-        path: savePath,
-        name: nameFile,
-        spices: 0
-      }
+//       const paramsSaveFile = {
+//         path: savePath,
+//         name: nameFile,
+//         spices: 0
+//       }
 
-      writeToJSON({
-        data: friends.reverse(),
-        ...paramsSaveFile
-      });
-    }
-  } else {
-    logger.error(`Не удалось прочитать информацию из файла "${savePath}/${nameFile}.json".`);
-  }
-}
+//       writeToJSON({
+//         data: friends.reverse(),
+//         ...paramsSaveFile
+//       });
+//     }
+//   } else {
+//     logger.error(`Не удалось прочитать информацию из файла "${savePath}/${nameFile}.json".`);
+//   }
+// }
 
-const compareFriend = async (name) => {
-  const folder = '../results/user_friends';
+// const compareFriend = async (name) => {
+//   const folder = '../results/user_friends';
 
-  let firstFriendData = await readJSONFile({
-    name: `${name}-friend-old-date`,
-    path: folder
-  });
+//   let firstFriendData = await readJSONFile({
+//     name: `${name}-friend-old-date`,
+//     path: folder
+//   });
 
-  let lastFriendData = await readJSONFile({
-    name: `${name}-friend-last-date`,
-    path: folder
-  });
+//   let lastFriendData = await readJSONFile({
+//     name: `${name}-friend-last-date`,
+//     path: folder
+//   });
 
-  const infoAboutFriends = parseFriends(firstFriendData, lastFriendData);
+//   const infoAboutFriends = parseFriends(firstFriendData, lastFriendData);
 
-  const {
-    countRemovedFriends,
-    countAddFriends,
-    removedFriends,
-    addFriends
-  } = infoAboutFriends;
+//   const {
+//     countRemovedFriends,
+//     countAddFriends,
+//     removedFriends,
+//     addFriends
+//   } = infoAboutFriends;
 
-  const infoAboutGroups = parseGroups(firstFriendData, lastFriendData);
-  const {
-    countRemovedGroups,
-    countAddGroups,
-    removedGroups,
-    addGroups
-  } = infoAboutGroups;
+//   const infoAboutGroups = parseGroups(firstFriendData, lastFriendData);
+//   const {
+//     countRemovedGroups,
+//     countAddGroups,
+//     removedGroups,
+//     addGroups
+//   } = infoAboutGroups;
 
-  const infoAboutSub = parseSubscriptions(firstFriendData, lastFriendData);
+//   const infoAboutSub = parseSubscriptions(firstFriendData, lastFriendData);
 
-  const {
-    countRemovedSubGroups,
-    countAddSubGroups,
-    countRemovedSubUsers,
-    countAddSubUsers,
-    removedSubGroups,
-    addSubGroups,
-    removedSubUsers,
-    addSubUsers
-  } = infoAboutSub;
+//   const {
+//     countRemovedSubGroups,
+//     countAddSubGroups,
+//     countRemovedSubUsers,
+//     countAddSubUsers,
+//     removedSubGroups,
+//     addSubGroups,
+//     removedSubUsers,
+//     addSubUsers
+//   } = infoAboutSub;
 
-  const data = {
-    countRemovedFriends,
-    countAddFriends,
-    countRemovedGroups,
-    countAddGroups,
-    countRemovedSubGroups,
-    countAddSubGroups,
-    countRemovedSubUsers,
-    countAddSubUsers,
-    removedFriends,
-    addFriends,
-    removedGroups,
-    addGroups,
-    removedSubGroups,
-    addSubGroups,
-    removedSubUsers,
-    addSubUsers
-  }
+//   const data = {
+//     countRemovedFriends,
+//     countAddFriends,
+//     countRemovedGroups,
+//     countAddGroups,
+//     countRemovedSubGroups,
+//     countAddSubGroups,
+//     countRemovedSubUsers,
+//     countAddSubUsers,
+//     removedFriends,
+//     addFriends,
+//     removedGroups,
+//     addGroups,
+//     removedSubGroups,
+//     addSubGroups,
+//     removedSubUsers,
+//     addSubUsers
+//   }
 
-  writeToJSON({
-    path: folder,
-    name: `${name}-compare-${bDate()}`,
-    data,
-  });
-}
+//   writeToJSON({
+//     path: folder,
+//     name: `${name}-compare-${bDate()}`,
+//     data,
+//   });
+// }
 
-const infoForFriends = async () => {
-  const constNameArr = [
-    'Павел_Дуров'
-  ];
+// const infoForFriends = async () => {
+//   const constNameArr = [
+//     'Павел_Дуров'
+//   ];
 
-  for (const name of constNameArr) {
-    await compareFriend(name);
+//   for (const name of constNameArr) {
+//     await compareFriend(name);
 
-    logger.type(`Сравниили пользователя - ${name}`);
-  };
-}
+//     logger.type(`Сравниили пользователя - ${name}`);
+//   };
+// }
 
 const searchUserInFriends = (users, userId) => {
   const idx = users.findIndex(({ id }) => id === userId);
@@ -920,117 +920,117 @@ const findNewFriendsFromData = async () => {
   }
 }
 
-const buildFriendFromData = async () => {
-  const folderNew = '../results/example-new';
-  const folderOld = '../results/example-old';
-  const folderOutput = '../results/example-output';
+// const buildFriendFromData = async () => {
+//   const folderNew = '../results/example-new';
+//   const folderOld = '../results/example-old';
+//   const folderOutput = '../results/example-output';
 
-  const nameNew = 'example-new';
-  const nameOld= 'example-old';
+//   const nameNew = 'example-new';
+//   const nameOld= 'example-old';
 
-  createFolders([
-    '../results',
-    folderNew,
-    folderOld,
-    folderOutput
-  ]);
+//   createFolders([
+//     '../results',
+//     folderNew,
+//     folderOld,
+//     folderOutput
+//   ]);
 
-  await delayF();
+//   await delayF();
 
-  let curData = await readJSONFile({
-    name: nameNew,
-    path: folderNew
-  });
+//   let curData = await readJSONFile({
+//     name: nameNew,
+//     path: folderNew
+//   });
 
-  let oldData = await readJSONFile({
-    name: nameOld,
-    path: folderOld
-  });
+//   let oldData = await readJSONFile({
+//     name: nameOld,
+//     path: folderOld
+//   });
 
-  if (!curData && !oldData) {
-    logger.error('Нет данных для сравнения.');
-  }
+//   if (!curData && !oldData) {
+//     logger.error('Нет данных для сравнения.');
+//   }
 
-  const defaultParams = {
-    friendsOld: [],
-    idOldUser: null,
-    first_name: '',
-    last_name: ''
-  }
+//   const defaultParams = {
+//     friendsOld: [],
+//     idOldUser: null,
+//     first_name: '',
+//     last_name: ''
+//   }
 
-  const bFriendObj = ({
-    friendsOld,
-    idOldUser,
-    first_name,
-    last_name
-  } = defaultParams) => ({
-    friendsOld,
-    idOldUser,
-    first_name,
-    last_name
-  });
+//   const bFriendObj = ({
+//     friendsOld,
+//     idOldUser,
+//     first_name,
+//     last_name
+//   } = defaultParams) => ({
+//     friendsOld,
+//     idOldUser,
+//     first_name,
+//     last_name
+//   });
 
-  const fFriend = (oldData, idItem) => {
-    const item = oldData.find(({ id }) => id === idItem);
+//   const fFriend = (oldData, idItem) => {
+//     const item = oldData.find(({ id }) => id === idItem);
 
-    if (!item) return bFriendObj();
+//     if (!item) return bFriendObj();
 
-    if (item) {
-      const {
-        friends,
-        id,
-        first_name,
-        last_name
-      } = item;
+//     if (item) {
+//       const {
+//         friends,
+//         id,
+//         first_name,
+//         last_name
+//       } = item;
 
-      return bFriendObj({
-        friendsOld: friends,
-        idOldUser: id,
-        first_name,
-        last_name
-      })
-    }
-  }
+//       return bFriendObj({
+//         friendsOld: friends,
+//         idOldUser: id,
+//         first_name,
+//         last_name
+//       })
+//     }
+//   }
 
-  if (curData && oldData) {
-    let noFriendsCount = 0;
-    let isFriendsCount = 0;
+//   if (curData && oldData) {
+//     let noFriendsCount = 0;
+//     let isFriendsCount = 0;
 
-    for (let item of curData) {
-      let { id, friends } = item;
+//     for (let item of curData) {
+//       let { id, friends } = item;
 
-      if (!friends.length) {
-        const {
-          friendsOld,
-          idOldUser,
-          first_name,
-          last_name
-        } = fFriend(oldData, id);
+//       if (!friends.length) {
+//         const {
+//           friendsOld,
+//           idOldUser,
+//           first_name,
+//           last_name
+//         } = fFriend(oldData, id);
 
-        if (!friendsOld.length) {
-          noFriendsCount++;
-          logger.info(`Пользователь ${first_name} ${last_name} с id${idOldUser} не имеет друзей.`);
-        }
+//         if (!friendsOld.length) {
+//           noFriendsCount++;
+//           logger.info(`Пользователь ${first_name} ${last_name} с id${idOldUser} не имеет друзей.`);
+//         }
 
-        if (friendsOld.length) {
-          isFriendsCount++;
-          item.friendsCount = friendsOld.length;
-          item.friends = friendsOld;
+//         if (friendsOld.length) {
+//           isFriendsCount++;
+//           item.friendsCount = friendsOld.length;
+//           item.friends = friendsOld;
 
-          logger.successBg(`Пользователю ${first_name} ${last_name} с id${idOldUser} добавлены друзья.`);
-        }
-      }
-    }
+//           logger.successBg(`Пользователю ${first_name} ${last_name} с id${idOldUser} добавлены друзья.`);
+//         }
+//       }
+//     }
 
-    logger.space();
-    logger.success(`Добавлено друзей у ${isFriendsCount} пользователей.`);
-    logger.success(`Нет друзей у ${noFriendsCount} пользователей.`);
+//     logger.space();
+//     logger.success(`Добавлено друзей у ${isFriendsCount} пользователей.`);
+//     logger.success(`Нет друзей у ${noFriendsCount} пользователей.`);
 
-    writeToJSON({
-      path: folderOutput,
-      name: 'friend-full',
-      data: curData,
-      spices: 0
-    });
-  }
-}
+//     writeToJSON({
+//       path: folderOutput,
+//       name: 'friend-full',
+//       data: curData,
+//       spices: 0
+//     });
+//   }
+// }
