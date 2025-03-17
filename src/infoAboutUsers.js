@@ -271,7 +271,7 @@ const buildFriendFromData = async () => {
   });
 
   const fFriend = (oldData, idItem) => {
-    const item = oldData.find(({ id }) => id === idItem);
+    const item = oldData.userFriends.items.find(({ id }) => id === idItem);
 
     if (!item) return bFriendObj();
 
