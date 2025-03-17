@@ -23,10 +23,7 @@ import delayF from './back/services/delay.js';
 
 import {
   bDate,
-  parseFriends,
-  parseFolowers,
-  parseGroups,
-  parseSubscriptions,
+  UsersCompare
 } from './back/services/helpers.js';
 
 const token = getToken();
@@ -115,67 +112,8 @@ const comparePersonsChanges = async (name) => {
     path: folder
   });
 
-  const infoAboutFriends = parseFriends(firstFriendData, lastFriendData);
-
-  const {
-    countRemovedFriends,
-    countAddFriends,
-    removedFriends,
-    addFriends
-  } = infoAboutFriends;
-
-  const infoAboutFolowers = parseFolowers(firstFriendData, lastFriendData);
-
-  const {
-    countRemovedFolowers,
-    countAddFolowers,
-    removedFolowers,
-    addFolowers
-  } = infoAboutFolowers;
-
-  const infoAboutGroups = parseGroups(firstFriendData, lastFriendData);
-  const {
-    countRemovedGroups,
-    countAddGroups,
-    removedGroups,
-    addGroups
-  } = infoAboutGroups;
-
-  const infoAboutSub = parseSubscriptions(firstFriendData, lastFriendData);
-
-  const {
-    countRemovedSubGroups,
-    countAddSubGroups,
-    countRemovedSubUsers,
-    countAddSubUsers,
-    removedSubGroups,
-    addSubGroups,
-    removedSubUsers,
-    addSubUsers
-  } = infoAboutSub;
-
-  const data = {
-    countRemovedFolowers,
-    countAddFolowers,
-    countRemovedFriends,
-    countAddFriends,
-    countRemovedGroups,
-    countAddGroups,
-    countRemovedSubGroups,
-    countAddSubGroups,
-    countRemovedSubUsers,
-    countAddSubUsers,
-    removedFriends,
-    addFriends,
-    removedFolowers,
-    addFolowers,
-    removedGroups,
-    addGroups,
-    removedSubGroups,
-    addSubGroups,
-    removedSubUsers,
-    addSubUsers
-  }
+  const usersCollection = new UsersCompare(firstFriendData, lastFriendData);
+  const data = usersCollection.info;
 
   writeToJSON({
     path: folder,
