@@ -2,18 +2,22 @@ import fs from 'fs';
 import logger from 'scrapy-logger';
 
 export const makeFolder = (nameFolder) => {
-  fs.mkdir(nameFolder, (err) => {
-    if (err && err.code !== 'EEXIST') {
-      logger.error(`Не удалось создать папку ${nameFolder}`);
-      logger.error(`${err}`);
-    }
+  return new Promise((resolve) => {
+    fs.mkdir(nameFolder, (err) => {
+      if (err && err.code !== 'EEXIST') {
+        logger.error(`Не удалось создать папку ${nameFolder}`);
+        logger.error(`${err}`);
+      }
 
-    if (err && err.code === 'EEXIST') {
-      logger.success(`Папка "${nameFolder}" была содана ранее.`);
-    }
+      if (err && err.code === 'EEXIST') {
+        logger.success(`Папка "${nameFolder}" была содана ранее.`);
+      }
 
-    if (!err) logger.success(`Папка ${nameFolder} успешно создана.`);
-  });
+      if (!err) logger.success(`Папка ${nameFolder} успешно создана.`);
+
+      resolve();
+    });
+  })
 };
 
 export const readJSONFile = ({ name, path = './results/' }) => new Promise((resolve, reject) => {
