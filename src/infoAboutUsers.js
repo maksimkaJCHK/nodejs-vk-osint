@@ -352,5 +352,3 @@ const infoForFriends = async (arrNames) => {
     logger.type(`Сравниили пользователя - ${name}`);
   };
 }
-
-comparePersonsChanges()
