@@ -112,14 +112,24 @@ const comparePersonsChanges = async (name) => {
     path: folder
   });
 
-  const usersCollection = new UsersCompare(firstFriendData, lastFriendData);
-  const data = usersCollection.info;
+  if (!firstFriendData) {
+    logger.mes(`Отсутствуют предыдущие данные для сравнения. Сравнение для пользователя ${name} осущетвить не получилось.`);
+  }
 
-  writeToJSON({
-    path: folder,
-    name: `${name}-compare-${bDate()}`,
-    data,
-  });
+  if (!lastFriendData) {
+    logger.mes(`Отсутствуют последние данные для сравнения. Сравнение для пользователя ${name} осущетвить не получилось.`);
+  }
+
+  if (firstFriendData && lastFriendData) {
+    const usersCollection = new UsersCompare(firstFriendData, lastFriendData);
+    const data = usersCollection.info;
+
+    writeToJSON({
+      path: folder,
+      name: `${name}-compare-${bDate()}`,
+      data,
+    });
+  }
 }
 
 const getFriendsOfPersonsFriends = async () => {
@@ -342,3 +352,5 @@ const infoForFriends = async (arrNames) => {
     logger.type(`Сравниили пользователя - ${name}`);
   };
 }
+
+comparePersonsChanges()

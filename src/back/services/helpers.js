@@ -1,5 +1,3 @@
-import logger from 'scrapy-logger';
-
 const bNumb = (numb) => (numb < 10) ? `0${numb}` : numb;
 
 export const bDate = () => {
