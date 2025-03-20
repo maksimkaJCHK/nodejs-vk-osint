@@ -1,3 +1,4 @@
+import { log } from 'console';
 import fs from 'fs';
 import logger from 'scrapy-logger';
 
@@ -29,15 +30,16 @@ export const readJSONFile = ({ name, path = './results/' }) => new Promise((reso
     if (err) {
       resolve(null);
 
+      logger.error(`Не удалось прочитать значение из файла "${path}/${name}.json".`);
+
       return;
     }
 
     obj = JSON.parse(data);
 
     resolve(obj);
+    logger.success(`Прочитал значение из файла "${path}/${name}.json".`);
   });
-
-  logger.info(`Прочитал значение их файла "${path}/${name}.json".`);
 });
 
 export const writeToJSON = ({

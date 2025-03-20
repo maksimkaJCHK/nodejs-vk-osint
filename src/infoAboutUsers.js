@@ -112,12 +112,19 @@ const comparePersonsChanges = async (name) => {
     path: folder
   });
 
-  if (!firstFriendData) {
-    logger.mes(`Отсутствуют предыдущие данные для сравнения. Сравнение для пользователя ${name} осущетвить не получилось.`);
+  if (!firstFriendData && !lastFriendData) {
+    logger.mes('Отсутствуют данные для сравнения.');
+    logger.mes(`Сравнение для пользователя ${name} осущеcтвить не получилось.`);
   }
 
-  if (!lastFriendData) {
-    logger.mes(`Отсутствуют последние данные для сравнения. Сравнение для пользователя ${name} осущетвить не получилось.`);
+  if (!firstFriendData && lastFriendData) {
+    logger.mes('Отсутствуют предыдущие данные для сравнения');
+    logger.mes(`Сравнение для пользователя ${name} осущеcтвить не получилось.`);
+  }
+
+  if (!lastFriendData && firstFriendData) {
+    logger.mes('Отсутствуют последние данные для сравнения.');
+    logger.mes(`Сравнение для пользователя ${name} осущеcтвить не получилось.`);
   }
 
   if (firstFriendData && lastFriendData) {
@@ -349,6 +356,6 @@ const infoForFriends = async (arrNames) => {
   for (const name of arrNames) {
     await comparePersonsChanges(name);
 
-    logger.type(`Сравниили пользователя - ${name}`);
+    logger.type(`Сравнили пользователя - ${name}`);
   };
 }
