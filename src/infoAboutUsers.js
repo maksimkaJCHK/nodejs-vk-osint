@@ -35,7 +35,7 @@ const vk = new VK({
 logger.disableDate();
 
 // Получаю друзей, подписки, подписчиков, группы
-const getTypeInfAboutUsers = async (persons) => {
+const getTypeInfAboutUsers = async (persons, logger) => {
   if (persons && !persons.length) {
     logger.error('Список пользователей пуст, не о ком собирать информацию.');
   }
@@ -99,7 +99,7 @@ const getTypeInfAboutUsers = async (persons) => {
   }
 }
 
-const comparePersonsChanges = async (name) => {
+const comparePersonsChanges = async (name, logger) => {
   const folder = '../results/person';
 
   let firstFriendData = await readJSONFile({
@@ -139,7 +139,7 @@ const comparePersonsChanges = async (name) => {
   }
 }
 
-const getFriendsOfPersonsFriends = async () => {
+const getFriendsOfPersonsFriends = async (logger) => {
   const savePath = '../results/person';
   const nameFile = 'example';
 
@@ -237,7 +237,7 @@ const getFriendsOfPersonsFriends = async () => {
   }
 }
 
-const buildFriendFromData = async () => {
+const buildFriendFromData = async (logger) => {
   const folderNew = '../results/person';
   const folderOld = '../results/friend-full';
   const folderOutput = '../results/person';
@@ -352,9 +352,9 @@ const buildFriendFromData = async () => {
   }
 }
 
-const infoForFriends = async (arrNames) => {
+const infoForFriends = async (arrNames, logger) => {
   for (const name of arrNames) {
-    await comparePersonsChanges(name);
+    await comparePersonsChanges(name, logger);
 
     logger.type(`Сравнили пользователя - ${name}`);
   };
