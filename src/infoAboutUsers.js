@@ -34,8 +34,10 @@ const vk = new VK({
 
 logger.disableDate();
 
+const log = () => logger;
+
 // Получаю друзей, подписки, подписчиков, группы
-const getTypeInfAboutUsers = async (persons, logger) => {
+const getTypeInfAboutUsers = async (persons, logger = log()) => {
   if (persons && !persons.length) {
     logger.error('Список пользователей пуст, не о ком собирать информацию.');
   }
@@ -99,7 +101,7 @@ const getTypeInfAboutUsers = async (persons, logger) => {
   }
 }
 
-const comparePersonsChanges = async (name, logger) => {
+const comparePersonsChanges = async (name, logger = log()) => {
   const folder = '../results/person';
 
   let firstFriendData = await readJSONFile({
@@ -139,7 +141,7 @@ const comparePersonsChanges = async (name, logger) => {
   }
 }
 
-const getFriendsOfPersonsFriends = async (logger) => {
+const getFriendsOfPersonsFriends = async (logger = log()) => {
   const savePath = '../results/person';
   const nameFile = 'example';
 
@@ -237,7 +239,7 @@ const getFriendsOfPersonsFriends = async (logger) => {
   }
 }
 
-const buildFriendFromData = async (logger) => {
+const buildFriendFromData = async (logger = log()) => {
   const folderNew = '../results/person';
   const folderOld = '../results/friend-full';
   const folderOutput = '../results/person';
@@ -352,7 +354,7 @@ const buildFriendFromData = async (logger) => {
   }
 }
 
-const infoForFriends = async (arrNames, logger) => {
+const infoForFriends = async (arrNames, logger = log()) => {
   for (const name of arrNames) {
     await comparePersonsChanges(name, logger);
 
