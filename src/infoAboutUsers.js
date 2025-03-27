@@ -1,6 +1,5 @@
 import { VK } from 'vk-io';
 
-import logger from 'scrapy-logger';
 import errorHandling, { isStopParser } from './back/services/errorHandling.js';
 
 import getToken from './back/services/token.js';
@@ -21,20 +20,13 @@ import { getUserFreAndInf } from './back/hof/services.js';
 
 import delayF from './back/services/delay.js';
 
-import {
-  bDate,
-  UsersCompare
-} from './back/services/helpers.js';
+import { bDate } from './back/services/helpers.js';
 
 const token = getToken();
 
 const vk = new VK({
   token
 });
-
-logger.disableDate();
-
-const log = () => logger;
 
 // Получаю друзей, подписки, подписчиков, группы
 const getTypeInfAboutUsers = async (persons, logger = log()) => {
@@ -199,7 +191,7 @@ const getFriendsOfPersonsFriends = async (logger = log()) => {
   }
 }
 
-const buildFriendFromData = async (logger = log()) => {
+const buildFriendFromOldData = async (logger = log()) => {
   const folderNew = '../results/person';
   const folderOld = '../results/friend-full';
   const folderOutput = '../results/person';

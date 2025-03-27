@@ -1,3 +1,9 @@
+import logger from 'scrapy-logger';
+
+logger.disableDate();
+
+export const log = () => logger;
+
 const bNumb = (numb) => (numb < 10) ? `0${numb}` : numb;
 
 export const bDate = () => {

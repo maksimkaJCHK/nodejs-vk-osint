@@ -1,5 +1,3 @@
-import logger from 'scrapy-logger';
-
 import {
   readJSONFile,
   writeToJSON,
@@ -8,12 +6,9 @@ import {
 
 import {
   bDate,
-  UsersCompare
+  UsersCompare,
+  log
 } from './back/services/helpers.js';
-
-logger.disableDate();
-
-const log = () => logger;
 
 const comparePersons = async (name, logger = log()) => {
   const folder = '../results/person';
