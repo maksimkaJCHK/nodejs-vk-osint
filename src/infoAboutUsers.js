@@ -5,10 +5,7 @@ import errorHandling, { isStopParser } from './back/services/errorHandling.js';
 import getToken from './back/services/token.js';
 import { friends } from './back/data/data.js';
 
-import {
-  getUserFriends,
-  getUsersInfo,
-} from './back/API/index.js';
+import { getUserFriends } from './back/API/index.js';
 
 import {
   readJSONFile,
