@@ -27,9 +27,5 @@ export default {
       },
     }),
     sizes(),
-    visualizer({
-      emitFile: false,
-      filename: "visualizations.html",
-    }),
   ]
 };
