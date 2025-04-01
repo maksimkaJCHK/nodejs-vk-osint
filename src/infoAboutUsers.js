@@ -17,7 +17,7 @@ import { getUserFreAndInf } from './back/hof/services.js';
 
 import delayF from './back/services/delay.js';
 
-import { bDate } from './back/services/helpers.js';
+import { bDate, log } from './back/services/helpers.js';
 
 const token = getToken();
 
