@@ -101,14 +101,17 @@ export class UsersCompare {
 
     const {
       fUniqVal: removedFriends,
-      lUniqVal: addFriends
+      lUniqVal: addFriends,
+      commоn: commоnFriends
     } = infoAboutFriends;
 
     return {
+      countCommоnFriends: commоnFriends.length,
       countRemovedFriends: removedFriends.length,
       countAddFriends: addFriends.length,
       removedFriends,
       addFriends,
+      commоnFriends
     }
   }
 
@@ -120,14 +123,17 @@ export class UsersCompare {
 
     const {
       fUniqVal: removedFolowers,
-      lUniqVal: addFolowers
+      lUniqVal: addFolowers,
+      commоn: commоnFolowers
     } = infoAboutFriends;
 
     return {
+      countCommоnFolowers: commоnFolowers.length,
       countRemovedFolowers: removedFolowers.length,
       countAddFolowers: addFolowers.length,
       removedFolowers,
       addFolowers,
+      commоnFolowers
     }
   }
 
@@ -139,14 +145,17 @@ export class UsersCompare {
 
     const {
       fUniqVal: removedGroups,
-      lUniqVal: addGroups
+      lUniqVal: addGroups,
+      commоn: commоnGroups
     } = infoAboutGroups;
 
     return {
+      countCommоnGroups: commоnGroups.length,
       countRemovedGroups: removedGroups.length,
       countAddGroups: addGroups.length,
       removedGroups,
-      addGroups
+      addGroups,
+      commоnGroups
     }
   }
 
@@ -161,15 +170,19 @@ export class UsersCompare {
 
     const {
       fUniqVal: removedSubGroups,
-      lUniqVal: addSubGroups
+      lUniqVal: addSubGroups,
+      commоn: commоnSubGroups
     } = infoAboutGroups;
 
     const {
       fUniqVal: removedSubUsers,
-      lUniqVal: addSubUsers
+      lUniqVal: addSubUsers,
+      commоn: commоnSubUsers
     } = infoAboutUsers;
 
     return {
+      countCommоnSubGroups: commоnSubGroups.length,
+      countCommоnSubUsers: commоnSubUsers.length,
       countRemovedSubGroups: removedSubGroups.length,
       countAddSubGroups: addSubGroups.length,
       countRemovedSubUsers: removedSubUsers.length,
@@ -177,11 +190,14 @@ export class UsersCompare {
       removedSubGroups,
       addSubGroups,
       removedSubUsers,
-      addSubUsers
+      addSubUsers,
+      commоnSubUsers,
+      commоnSubGroups
     }
   }
 
-  get info() {
+  // Используется для поиска изменений у конкретного пользователя
+  get changes() {
     const {
       countRemovedFriends,
       countAddFriends,
@@ -235,6 +251,44 @@ export class UsersCompare {
       addSubGroups,
       removedSubUsers,
       addSubUsers
+    }
+  }
+
+  // Используется для сравнения 2 пользователей, смотрю, что у них общего
+  get commons() {
+    const {
+      countCommоnFriends,
+      commоnFriends
+    } = this.friendsInfo;
+
+    const {
+      countCommоnFolowers,
+      commоnFolowers
+    } = this.folowersInfo;
+
+    const {
+      countCommоnGroups,
+      commоnGroups
+    } = this.groupsInfo;
+
+    const {
+      countCommоnSubGroups,
+      countCommоnSubUsers,
+      commоnSubUsers,
+      commоnSubGroups
+    } = this.subscriptionsInfo;
+
+    return {
+      countCommоnFriends,
+      countCommоnFolowers,
+      countCommоnGroups,
+      countCommоnSubGroups,
+      countCommоnSubUsers,
+      commоnFriends,
+      commоnFolowers,
+      commоnGroups,
+      commоnSubUsers,
+      commоnSubGroups
     }
   }
 }

@@ -1,5 +1,10 @@
+import { VK } from 'vk-io';
+
+import errorHandling from './back/services/errorHandling.js';
+import { getUserFreAndInf } from './back/hof/services.js';
+import getToken from './back/services/token.js';
+
 import {
-  readJSONFile,
   writeToJSON,
   createFolders,
 } from './back/services/fs.js';
@@ -10,50 +15,47 @@ import {
   log
 } from './back/services/helpers.js';
 
-const comparePersons = async (name, logger = log()) => {
-  const folder = '../results/person';
+const token = getToken();
 
-  let firstFriendData = await readJSONFile({
-    name: `${name}-first`,
-    path: folder
-  });
+const vk = new VK({
+  token
+});
 
-  let lastFriendData = await readJSONFile({
-    name: `${name}-last`,
-    path: folder
-  });
 
-  if (!firstFriendData && !lastFriendData) {
-    logger.mes('Отсутствуют данные для сравнения.');
-    logger.mes(`Сравнение для пользователя ${name} осущеcтвить не получилось.`);
+// Сравнение 2 пользователей по id-ам, ищу общих друзей, общие группы/сообщества, общих подписчиков
+const compareUsersFromNet = async (fId, lId, logger = log()) => {
+  if (!fId && !lId) logger.mes('Отсутствуют id-ки для сравнения.');
+  if (!fId && lId) logger.mes('Отсутствует первый id-ик для сравнения.');
+  if (!lId && fId) logger.mes('Отсутствует второй id-ик для сравнения.');
+
+  if (fId && lId) {
+    const savePath = '../results/compare';
+
+    createFolders([
+      '../results',
+      savePath
+    ]);
+
+    try {
+      const data = await Promise.all([
+        getUserFreAndInf({ vk, id: fId, name: 'Первый пользователь' }),
+        getUserFreAndInf({ vk, id: lId, name: 'Второй пользователь' }),
+      ]);
+
+      const [fUserInfo, lUserInfo] = data;
+      const usersCollection = new UsersCompare(fUserInfo, lUserInfo);
+      const compare = usersCollection.commons;
+
+      const fName = `${fUserInfo.userInfo[0].first_name} ${fUserInfo.userInfo[0].last_name}`;
+      const lName = `${lUserInfo.userInfo[0].first_name} ${lUserInfo.userInfo[0].last_name}`;
+
+      writeToJSON({
+        path: savePath,
+        name: `${fName}-${lName}-${bDate()}`,
+        data: compare,
+      });
+    } catch (error) {
+      errorHandling(error, 'Users');
+    }
   }
-
-  if (!firstFriendData && lastFriendData) {
-    logger.mes('Отсутствуют предыдущие данные для сравнения');
-    logger.mes(`Сравнение для пользователя ${name} осущеcтвить не получилось.`);
-  }
-
-  if (!lastFriendData && firstFriendData) {
-    logger.mes('Отсутствуют последние данные для сравнения.');
-    logger.mes(`Сравнение для пользователя ${name} осущеcтвить не получилось.`);
-  }
-
-  if (firstFriendData && lastFriendData) {
-    const usersCollection = new UsersCompare(firstFriendData, lastFriendData);
-    const data = usersCollection.info;
-
-    writeToJSON({
-      path: folder,
-      name: `${name}-compare-${bDate()}`,
-      data,
-    });
-  }
-}
-
-const infoForFriends = async (arrNames, logger = log()) => {
-  for (const name of arrNames) {
-    await comparePersons(name, logger);
-
-    logger.type(`Сравнили пользователя - ${name}`);
-  };
 }
