@@ -1,7 +1,7 @@
 {
   "name": "nodejs-vk-osint",
   "version": "0.0.1",
-  "description": "Node.js vk osint",
+  "description": "Node.js VK osint",
   "main": "index.js",
   "type": "module",
   "scripts": {
