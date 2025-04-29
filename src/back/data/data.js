@@ -1,3 +1,11 @@
+export const hidenFriends = [
+  {
+    id: 1,
+    name: 'Павел Дуров',
+    nick: 'durov',
+  },
+];
+
 export const friends = [
   {
     id: 1,

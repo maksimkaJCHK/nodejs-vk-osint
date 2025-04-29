@@ -3,9 +3,10 @@ import { VK } from 'vk-io';
 import errorHandling, { isStopParser } from './back/services/errorHandling.js';
 
 import getToken from './back/services/token.js';
-import { friends } from './back/data/data.js';
 
-import { getUserFriends } from './back/API/index.js';
+import { friends, hidenFriends } from './back/data/data.js';
+
+import { getUserFriends, getUsersInfo } from './back/API/index.js';
 
 import {
   readJSONFile,
@@ -98,6 +99,20 @@ const getFriendsOfPersonsFriends = async (logger = log()) => {
     name: nameFile,
     path: savePath
   });
+
+  if (hidenFriends.length) {
+    const user_ids = hidenFriends.map(({ id }) => id);
+    const names = hidenFriends.map(({ name }) => name);
+
+    const hUsers = await getUsersInfo(vk, user_ids.join(','), names.join(','));
+
+    if (person?.userFriends?.items) {
+      person.userFriends.items = [
+        ...hUsers,
+        ...person.userFriends.items,
+      ];
+    }
+  }
 
   if (person?.userFriends?.items && person.userFriends.items.length) {
     let isFriendParser = true;
