@@ -1,8 +1,5 @@
-import { VK } from 'vk-io';
-
 import errorHandling, { isStopParser } from './back/services/errorHandling.js';
 
-import getToken from './back/services/token.js';
 import { friends } from './back/data/data.js';
 
 import {
@@ -18,13 +15,7 @@ import {
 
 import delayF from './back/services/delay.js';
 
-import { bDate, log } from './back/services/helpers.js';
-
-const token = getToken();
-
-const vk = new VK({
-  token
-});
+import { vk, log, bDate } from './back/services/helpers.js';
 
 // Получаю информацию о пользователе/пользователях
 const getUsersInfoFromData = async (logger = log()) => {

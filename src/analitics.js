@@ -1,8 +1,5 @@
-import { VK } from 'vk-io';
-
 import errorHandling from './back/services/errorHandling.js';
 import { getUserFreAndInf } from './back/hof/services.js';
-import getToken from './back/services/token.js';
 
 import {
   writeToJSON,
@@ -10,17 +7,11 @@ import {
 } from './back/services/fs.js';
 
 import {
+  vk,
   bDate,
   UsersCompare,
   log
 } from './back/services/helpers.js';
-
-const token = getToken();
-
-const vk = new VK({
-  token
-});
-
 
 // Сравнение 2 пользователей по id-ам, ищу общих друзей, общие группы/сообщества, общих подписчиков
 const compareUsersFromNet = async (fId, lId, logger = log()) => {

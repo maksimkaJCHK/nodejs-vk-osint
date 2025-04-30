@@ -1,8 +1,18 @@
+import { VK } from 'vk-io';
+
+import getToken from '../services/token.js'
+
 import logger from 'scrapy-logger';
 
 logger.disableDate();
 
 export const log = () => logger;
+
+const token = getToken();
+
+export const vk = new VK({
+  token
+});
 
 const bNumb = (numb) => (numb < 10) ? `0${numb}` : numb;
 
