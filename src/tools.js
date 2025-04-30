@@ -1,6 +1,5 @@
 import { VK } from 'vk-io';
 
-import logger from 'scrapy-logger';
 import errorHandling, { isStopParser } from './back/services/errorHandling.js';
 
 import getToken from './back/services/token.js';
@@ -19,7 +18,7 @@ import {
 
 import delayF from './back/services/delay.js';
 
-import { bDate } from './back/services/helpers.js';
+import { bDate, log } from './back/services/helpers.js';
 
 const token = getToken();
 
@@ -27,10 +26,8 @@ const vk = new VK({
   token
 });
 
-logger.disableDate();
-
 // Получаю информацию о пользователе/пользователях
-const getUsersInfoFromData = async () => {
+const getUsersInfoFromData = async (logger = log()) => {
   const savePath = '../results/example';
 
   let friends = await readJSONFile({
@@ -71,7 +68,7 @@ const getUsersInfoFromData = async () => {
   }
 }
 
-const searchUserInFriends = (users, userId) => {
+const searchUserInFriends = (users, userId, logger = log()) => {
   const idx = users.findIndex(({ id }) => id === userId);
 
   return idx !== -1;
@@ -148,7 +145,7 @@ const searchUserInFriendsJSON = async (userId, nameUser = 'user') => {
   });
 }
 
-const clearOldFriend = async () => {
+const clearOldFriend = async (logger = log()) => {
   const folder = '../results/example';
   const nameCurArr = 'example';
   const nameFArr = 'info-not-friend';
@@ -179,7 +176,7 @@ const clearOldFriend = async () => {
   });
 }
 
-const findNewFriends = async () => {
+const findNewFriends = async (logger = log()) => {
   const folder = '../results/example';
   const nameFile = 'friends-parser';
   let newUsers = 0;
@@ -231,7 +228,7 @@ const findNewFriends = async () => {
   }
 }
 
-const findNewFriendFromCompare = async (findId, nameUser = 'User') => {
+const findNewFriendFromCompare = async (findId, nameUser = 'User', logger = log()) => {
   const folder = '../results/example';
   const nameFile = 'friends-parser';
 
@@ -337,7 +334,7 @@ const findFriendsOnArr = async ({
   data,
   closedFriends,
   sId
-}) => {
+}, logger = log()) => {
   const newFriends = [];
   const commonFriends = [];
   const closedCommonFriends = [];
@@ -424,7 +421,7 @@ const friendOutput = ({
   commonFriends,
   countClosedCommonFriends,
   closedCommonFriends,
-}) => {
+}, logger = log()) => {
   logger.space();
   logger.success(`Всего обработано ${countUser} пользователей.`);
   logger.success(`Найдено новых друзей ${newFriends.length}.`);
@@ -449,7 +446,7 @@ const friendOutput = ({
   }
 }
 
-const findNewFriendFromData = async (userId, sId) => {
+const findNewFriendFromData = async (userId, sId, logger = log()) => {
   const folder = '../results/friend-full';
   const folderOutput = '../results/example-output';
   const nameFile = 'friend-full';
@@ -506,7 +503,7 @@ const findNewFriendFromData = async (userId, sId) => {
   }
 }
 
-const deletedFriend = async (sUserId) => {
+const deletedFriend = async (sUserId, logger = log()) => {
   const folder = '../results/example';
   const nameFile = 'friends-parser';
 
@@ -588,7 +585,7 @@ const deletedFriend = async (sUserId) => {
   }
 }
 
-const findNewFriendsGroup = async () => {
+const findNewFriendsGroup = async (logger = log()) => {
   const sId = 2;
 
   const folder = '../results/example';
