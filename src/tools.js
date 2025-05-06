@@ -59,7 +59,7 @@ const getUsersInfoFromData = async (logger = log()) => {
   }
 }
 
-const searchUserInFriends = (users, userId, logger = log()) => {
+const searchUserInFriends = (users, userId) => {
   const idx = users.findIndex(({ id }) => id === userId);
 
   return idx !== -1;
