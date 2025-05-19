@@ -17,7 +17,7 @@ import delayF from './back/services/delay.js';
 
 import { vk, log, bDate } from './back/services/helpers.js';
 
-// Получаю информацию о пользователе/пользователях
+// Получаю информацию о пользователе/пользователях из файла, если нет пользователей, профиль закрыт.
 const getUsersInfoFromData = async (logger = log()) => {
   const savePath = '../results/example';
 
